@@ -1,0 +1,36 @@
+{
+ "Version": "1.1",
+ "Irn": null,
+ "DocDtls": {
+  "Typ": "INV",
+  "No": "MH/26/0102",
+  "Dt": "12/10/2026"
+ },
+ "SellerDtls": {
+  "Gstin": "27AAPFU0939F1ZV",
+  "LglNm": "Example Consulting Pvt Ltd",
+  "Stcd": "27"
+ },
+ "BuyerDtls": {
+  "Gstin": "29AABCT1332L1ZA",
+  "LglNm": "Sample Buyer Pvt Ltd",
+  "Pos": "29",
+  "Stcd": "29"
+ },
+ "ItemList": [
+  {
+   "SlNo": "1",
+   "PrdDesc": "Software support",
+   "IsServc": "Y",
+   "HsnCd": "847130",
+   "GstRt": 12,
+   "AssAmt": 50000,
+   "CgstAmt": 3000,
+   "SgstAmt": 3000,
+   "IgstAmt": 0
+  }
+ ],
+ "ValDtls": {
+  "TotInvVal": 56000
+ }
+}

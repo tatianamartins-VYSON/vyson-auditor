@@ -17,11 +17,11 @@ table{width:100%;border-collapse:collapse;font-size:14px;margin-top:10px}th{text
 .kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px;margin:10px 0}.kv div{border:1px solid var(--lin);border-radius:8px;padding:6px 10px}.kv small{display:block;color:var(--mut);font-size:11px}
 .par{background:#f7fafb;border-left:4px solid var(--az);padding:10px 14px;border-radius:6px;white-space:pre-wrap;text-align:justify}.meta{font-size:12px;color:var(--mut)}.trace{margin-top:12px;border:1px solid var(--lin);border-radius:10px;padding:10px 14px;background:#fbfcfd}.trace ol{margin:8px 0 0;padding-left:22px}.trace li{margin:4px 0}.ag{display:inline-block;background:var(--az);color:#fff;border-radius:6px;padding:0 8px;font-size:12px;font-weight:700;margin-right:6px}
 </style></head><body>
-<header><h1>Vyson Auditor · equipe de agentes fiscais</h1><p>Envie a nota em XML, PDF ou Word. Um coordenador planeja e chama 7 agentes: extrator, auditor de ISS, auditor de ICMS, CNPJ, jurisprudência (STF/STJ), jurídico e comunicador. Eles decidem: aprovar, revisar ou devolver.</p></header>
+<header><h1>Vyson Auditor · equipe de agentes fiscais</h1><p>Envie a nota em XML, PDF ou Word. Um coordenador planeja e chama 9 agentes: extrator, auditor de ISS, auditor de ICMS, auditor de VAT dos Emirados, auditor de GST da Índia, CNPJ, jurisprudência (STF/STJ), jurídico e comunicador. Eles decidem: aprovar, revisar ou devolver.</p></header>
 <main>
 <section class="card">
- <div id="drop"><b>Clique ou arraste as notas aqui</b><br>NFS-e (XML, PDF, Word) e NF-e/DANFE de material (XML) · também aceita pasta .zip</div>
- <input type="file" id="f" multiple accept=".xml,.pdf,.docx,.zip" hidden>
+ <div id="drop"><b>Clique ou arraste as notas aqui</b><br>Brasil: NFS-e (XML, PDF, Word) e NF-e/DANFE · Dubai: fatura eletrônica VAT (XML) · Índia: e-invoice GST (JSON) · aceita pasta .zip</div>
+ <input type="file" id="f" multiple accept=".xml,.pdf,.docx,.json,.zip" hidden>
  <div class="lista" id="lista"></div>
  <div class="row"><button id="go" disabled>Auditar</button><button id="ex" style="background:#fff;color:var(--az);border:1px solid var(--az)">Usar notas de exemplo</button><span class="meta" id="st"></span></div>
 </section>
@@ -52,7 +52,7 @@ const lista=()=>{$("lista").textContent=arqs.map(a=>a.nome).join(" · ");$("go")
 const ler=async fs=>{for(const f of fs){const b=new Uint8Array(await f.arrayBuffer());let s="";for(let i=0;i<b.length;i+=8192)s+=String.fromCharCode(...b.subarray(i,i+8192));arqs.push({nome:f.name,b64:btoa(s)})}lista()};
 $("drop").onclick=()=>$("f").click();$("f").onchange=e=>ler(e.target.files);
 ["dragover","dragleave","drop"].forEach(t=>$("drop").addEventListener(t,e=>{e.preventDefault();$("drop").classList.toggle("on",t==="dragover");if(t==="drop")ler(e.dataTransfer.files)}));
-$("ex").onclick=async()=>{arqs=[];for(const n of ["nota_ok.xml","nota_erro.xml","nota_obra.pdf","nota_sp.docx"]){const r=await fetch("exemplos/"+n);if(r.ok){const f=new File([await r.blob()],n);await ler([f])}}};
+$("ex").onclick=async()=>{arqs=[];for(const n of ["nota_ok.xml","nota_erro.xml","nota_obra.pdf","nota_sp.docx","fatura_dubai_erro.xml","einvoice_india_erro.json"]){const r=await fetch("exemplos/"+n);if(r.ok){const f=new File([await r.blob()],n);await ler([f])}}};
 $("go").onclick=async()=>{$("go").disabled=true;$("st").textContent="Auditando…";
  const r=await(await fetch("/api/auditar",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(arqs)})).json();
  $("st").textContent="";$("go").disabled=false;

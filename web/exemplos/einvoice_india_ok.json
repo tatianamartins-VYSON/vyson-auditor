@@ -1,0 +1,36 @@
+{
+ "Version": "1.1",
+ "Irn": "a1b2c3a1b2c3a1b2c3a1b2c3a1b2c3a1b2c3a1b2c3a1b2c3a1b2c3a1b2c3",
+ "DocDtls": {
+  "Typ": "INV",
+  "No": "MH/26/0101",
+  "Dt": "12/10/2026"
+ },
+ "SellerDtls": {
+  "Gstin": "27AAPFU0939F1ZV",
+  "LglNm": "Example Consulting Pvt Ltd",
+  "Stcd": "27"
+ },
+ "BuyerDtls": {
+  "Gstin": "27AABCT1332L1ZE",
+  "LglNm": "Sample Buyer Pvt Ltd",
+  "Pos": "27",
+  "Stcd": "27"
+ },
+ "ItemList": [
+  {
+   "SlNo": "1",
+   "PrdDesc": "Accounting consultancy",
+   "IsServc": "Y",
+   "HsnCd": "998221",
+   "GstRt": 18,
+   "AssAmt": 100000,
+   "CgstAmt": 9000,
+   "SgstAmt": 9000,
+   "IgstAmt": 0
+  }
+ ],
+ "ValDtls": {
+  "TotInvVal": 118000
+ }
+}

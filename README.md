@@ -1,6 +1,6 @@
 # Vyson Auditor
 
-**A team of AI agents that audits Brazilian invoices, answers SAP Ariba sourcing events and prepares public-tender paperwork, citing the law for every decision.**
+**A team of AI agents that audits invoices from Brazil, Dubai (UAE VAT) and India (GST), answers SAP Ariba sourcing events and prepares public-tender paperwork, citing the law for every decision.**
 
 Live demo: **https://tatianabot-dashboard.vercel.app/fiscal/auditor**
 (click "Usar notas de exemplo" → "Auditar" and open "Como os agentes trabalharam" to watch the agents plan and act)
@@ -11,7 +11,7 @@ Built by a Brazilian accountant and court accounting expert to solve a daily pro
 
 | Workflow | Input | What the agents do | Output |
 |---|---|---|---|
-| **Invoice audit** | NFS-e (XML, PDF, Word) or NF-e/DANFE (XML), or a .zip with hundreds of them | Read the invoice, check tax code, municipal rate, tax amount, withholdings, supplier CNPJ, binding court precedents | Decision (approve / review / return to supplier), findings with legal source, e-mail to the supplier |
+| **Invoice audit** | Brazil: NFS-e (XML, PDF, Word) or NF-e/DANFE (XML) · UAE: e-invoice UBL/PINT AE (XML) · India: GST e-invoice (IRP JSON) · or a .zip with hundreds of them | Read the invoice, check tax code, municipal rate, tax amount, withholdings, supplier CNPJ, binding court precedents | Decision (approve / review / return to supplier), findings with legal source, e-mail to the supplier |
 | **SAP Ariba event** | RFQ/RFP exported from Ariba (Excel, PDF, Word) | Read the items, split goods from services, price each item with the taxes of the bidder's regime, compute buyer withholdings | Priced response sheet ready to upload, net amount to receive |
 | **Public tender** | Tender notice (PDF) | Extract requirements and risks, generate the 7 declarations required by Law 14.133/2021 and the commercial proposal, then validate the signed documents | Word documents + checklist of what is missing, expired or inconsistent |
 
@@ -23,6 +23,8 @@ flowchart LR
   C -->|1| E[Extractor<br/>XML · PDF · DOCX · XLSX]
   C -->|2| ISS[ISS auditor<br/>LC 116 + municipal tables]
   C -->|2| ICMS[ICMS auditor<br/>CFOP · interstate rate · DIFAL]
+  C -->|2| VAT[UAE VAT auditor<br/>TRN · 5% / zero / exempt]
+  C -->|2| GST[India GST auditor<br/>GSTIN · CGST+SGST / IGST · GST 2.0]
   C -->|3| CNPJ[CNPJ agent<br/>Federal Revenue registry]
   C -->|4| J[Case-law agent<br/>STF/STJ binding precedents + LexML]
   C -->|5| L[Legal agent<br/>85 official norms]
@@ -35,6 +37,15 @@ flowchart LR
 - **Deterministic tools for the facts.** Tax rules run as code over official data, so numbers are reproducible and auditable; the model decides *what to do*, not *what the tax rate is*.
 - **Fallback planner.** Without a model key the same plan runs from rules, so the demo never stops.
 - **Full trace.** The UI shows every step ("Coordinator decided to call: ISS auditor → 1 error → Legal agent found LC 116/2003 → Communicator drafted the e-mail").
+
+## Beyond Brazil
+
+| Country | What the agent checks | Legal basis |
+|---|---|---|
+| **UAE (Dubai)** | Supplier/customer TRN format, VAT category and rate (5% standard, zero-rated, exempt), VAT amount, totals, AED amount, mandatory tax-invoice fields, e-invoicing readiness | Federal Decree-Law 8/2017, Executive Regulation art. 59 |
+| **India** | GSTIN with checksum, intra-state CGST+SGST vs inter-state IGST, GST 2.0 rates (from 22 Sep 2025), SAC chapter 99 for services, IRN, TDS hint | CGST Act 2017, IGST Act 2017, CGST Rules 46 and 48 |
+
+Adding a country is a new auditor module plus its official table; the coordinator and the other agents stay the same.
 
 ## Official data used
 

@@ -24,6 +24,7 @@ import urllib.request
 from auditar import auditar
 from extrair import extrair
 from nfe import auditar_nfe, eh_nfe
+from internacional import auditar_india, auditar_uae, eh_india, eh_uae
 
 _R = pathlib.Path(__file__).resolve().parents[1]
 BASE = next((p for p in (_R / "data", _R / "public" / "fiscal") if p.is_dir()), _R / "data")
@@ -46,6 +47,15 @@ class Sessao:
 # ---------------- agentes especialistas ----------------
 def ag_extrator(s: Sessao, **_):
     texto = s.dados[:400000].decode("utf-8", "ignore") if s.dados.lstrip()[:1] == b"<" else ""
+    txt = s.dados[:400000].decode("utf-8", "ignore")
+    if eh_uae(txt):
+        s.nota = {"tipo": "Fatura UAE (VAT)", "_txt": txt}
+        s.log("Extrator", "Identificou fatura eletrônica dos Emirados (UBL/PINT AE, VAT)")
+        return {"tipo": "Fatura UAE (VAT)", "proximo": "auditor_vat_uae"}
+    if eh_india(txt):
+        s.nota = {"tipo": "e-Invoice Índia (GST)", "_txt": txt}
+        s.log("Extrator", "Identificou e-invoice da Índia (JSON do IRP, GST)")
+        return {"tipo": "e-Invoice Índia (GST)", "proximo": "auditor_gst_india"}
     if texto and eh_nfe(texto):
         s.auditoria = None
         s.nota = {"tipo": "NF-e mercadoria", "_xml": texto}
@@ -69,6 +79,20 @@ def ag_auditor_icms(s: Sessao, **_):
     s.auditoria = auditar_nfe(s.nota["_xml"], os.getenv("CNPJ_EMPRESA"))
     s.nota = {**s.auditoria["nota"], "tipo": "NF-e mercadoria"}
     s.log("Auditor ICMS", f"{s.auditoria['erros']} erro(s), {s.auditoria['alertas']} alerta(s) → {s.auditoria['decisao']}")
+    return _resumo(s)
+
+
+def ag_auditor_vat_uae(s: Sessao, **_):
+    s.auditoria = auditar_uae(s.nota["_txt"])
+    s.nota = {**s.auditoria["nota"], "tipo": s.auditoria["tipo"]}
+    s.log("Auditor VAT (Emirados)", f"{s.auditoria['erros']} erro(s), {s.auditoria['alertas']} alerta(s) → {s.auditoria['decisao']}")
+    return _resumo(s)
+
+
+def ag_auditor_gst_india(s: Sessao, **_):
+    s.auditoria = auditar_india(s.nota["_txt"])
+    s.nota = {**s.auditoria["nota"], "tipo": s.auditoria["tipo"]}
+    s.log("Auditor GST (Índia)", f"{s.auditoria['erros']} erro(s), {s.auditoria['alertas']} alerta(s) → {s.auditoria['decisao']}")
     return _resumo(s)
 
 
@@ -165,12 +189,15 @@ def ag_comunicador(s: Sessao, **_):
     return {"email": s.email}
 
 
-AGENTES = {"extrator": ag_extrator, "auditor_iss": ag_auditor_iss, "auditor_icms": ag_auditor_icms, "cnpj": ag_cnpj, "juridico": ag_juridico,
+AGENTES = {"extrator": ag_extrator, "auditor_iss": ag_auditor_iss, "auditor_icms": ag_auditor_icms,
+           "auditor_vat_uae": ag_auditor_vat_uae, "auditor_gst_india": ag_auditor_gst_india, "cnpj": ag_cnpj, "juridico": ag_juridico,
            "jurisprudencia": ag_jurisprudencia, "comunicador": ag_comunicador}
 DESCR = {
     "extrator": "Lê o arquivo enviado e identifica se é NFS-e (serviço) ou NF-e (mercadoria). Sempre o primeiro passo.",
     "auditor_iss": "Audita NFS-e: item da LC 116, alíquota oficial do município, valor do ISS, retenção de INSS.",
     "auditor_icms": "Audita NF-e: chave, autorização, CNPJ, NCM, CFOP, alíquota interestadual, ICMS por item, totais e DIFAL.",
+    "auditor_vat_uae": "Audita fatura dos Emirados Árabes (Dubai): TRN, categoria e alíquota de VAT (5%, zero, isento), valor do VAT em AED e campos obrigatórios.",
+    "auditor_gst_india": "Audita e-invoice da Índia: GSTIN com dígito verificador, CGST+SGST ou IGST conforme o estado, alíquotas do GST 2.0, SAC/HSN e IRN.",
     "cnpj": "Consulta a situação cadastral do CNPJ do emitente na Receita Federal. Parâmetro opcional: cnpj.",
     "juridico": "Busca na base de legislação o fundamento legal dos achados. Parâmetro opcional: tema.",
     "jurisprudencia": "Confronta a nota com decisões vinculantes do STF e do STJ (súmulas vinculantes, repercussão geral, repetitivos) e aponta quando a jurisprudência muda o que a lei diz. Parâmetro opcional: tema, para busca ao vivo no LexML.",
@@ -179,7 +206,7 @@ DESCR = {
 FERRAMENTAS = [{"type": "function", "function": {"name": k, "description": d, "parameters": {"type": "object", "properties":
                ({"cnpj": {"type": "string"}} if k == "cnpj" else {"tema": {"type": "string"}} if k in ("juridico", "jurisprudencia") else {})}}} for k, d in DESCR.items()]
 SISTEMA = ("Você é o coordenador de uma equipe de auditoria fiscal brasileira. Planeje e chame os agentes (ferramentas) na ordem certa: "
-           "extrator primeiro; depois o auditor certo para o tipo de nota; consulte o CNPJ do emitente; consulte a jurisprudência vinculante; se houver erros ou alertas, peça ao jurídico "
+           "extrator primeiro; depois o auditor certo para o tipo de nota (ISS, ICMS, VAT dos Emirados ou GST da Índia); para notas brasileiras, consulte o CNPJ do emitente; consulte a jurisprudência vinculante; se houver erros ou alertas, peça ao jurídico "
            "o fundamento e ao comunicador o e-mail. Se uma ferramenta falhar, siga sem ela. Ao terminar, escreva em português um parecer de até 6 linhas "
            "com a decisão final (aprovar, revisar ou devolver ao fornecedor), citando as fontes entre colchetes. Use apenas os resultados das ferramentas.")
 
@@ -221,10 +248,11 @@ def coordenar(nome: str, dados: bytes) -> dict:
         s.log("Coordenador", "Plano: extrair → auditar → CNPJ → jurisprudência → jurídico → comunicar")
         r = ag_extrator(s)
         AGENTES[r["proximo"]](s)
-        ag_cnpj(s)
-        ag_jurisprudencia(s)
-        if s.auditoria["decisao"] != "aprovar":
-            ag_juridico(s)
+        if r["proximo"] in ("auditor_iss", "auditor_icms"):
+            ag_cnpj(s)
+            ag_jurisprudencia(s)
+            if s.auditoria["decisao"] != "aprovar":
+                ag_juridico(s)
         ag_comunicador(s)
     elif s.auditoria["decisao"] != "aprovar" and s.email is None:
         ag_comunicador(s)
