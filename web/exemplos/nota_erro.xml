@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CompNfse><Nfse><InfNfse><Numero>587</Numero><DataEmissao>2026-10-12</DataEmissao>
+<PrestadorServico><IdentificacaoPrestador><Cnpj>11444777000161</Cnpj></IdentificacaoPrestador><RazaoSocial>Consultoria Exemplo SA</RazaoSocial></PrestadorServico>
+<Servico><Valores><ValorServicos>8000.00</ValorServicos><IssRetido>2</IssRetido><ValorIss>400.00</ValorIss><Aliquota>0.05</Aliquota></Valores>
+<ItemListaServico>1.02</ItemListaServico><Discriminacao>Programação de aplicativo</Discriminacao><CodigoMunicipio>2704302</CodigoMunicipio></Servico>
+</InfNfse></Nfse></CompNfse>

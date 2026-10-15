@@ -1,0 +1,2501 @@
+{
+"v": "2026-10-09",
+"aviso": "Biblioteca de normas tributárias. Fase 1: federal completa (Planalto, Receita Federal, gov.br) + lista municipal de Maceió/AL. Normas estaduais (ICMS) e de outros municípios entram por UF/município. Conferir vigência e alterações posteriores antes de usar em caso concreto.",
+"normas": [
+{
+"id": "cf88",
+"tipo": "Constituição",
+"numero": "Constituição Federal",
+"ano": 1988,
+"data": "1988-10-05",
+"orgao": "Assembleia Nacional Constituinte",
+"ementa": "Sistema Tributário Nacional (arts. 145 a 162): competências, limitações ao poder de tributar, impostos da União, Estados e Municípios; imunidade das exportações; arts. 156-A e 195, V (IBS e CBS, após EC 132).",
+"temas": [
+"constitucional",
+"competência",
+"imunidade",
+"exportação"
+],
+"tributos": [
+"IRPJ",
+"IPI",
+"ICMS",
+"ISS",
+"IBS",
+"CBS",
+"INSS",
+"II",
+"IE"
+],
+"aplica": [
+"servico",
+"mercadoria",
+"importacao",
+"exportacao"
+],
+"vigencia": "Em vigor desde 05/10/1988",
+"casos": [
+"Imunidade de exportação (art. 149, §2º, I; art. 155, §2º, X)",
+"Não incidência de ISS sobre exportação por lei complementar (art. 156, §3º, II)",
+"Base do IBS/CBS (arts. 156-A e 195, V)"
+],
+"link": "https://www.planalto.gov.br/ccivil_03/constituicao/constituicao.htm",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "ctn",
+"tipo": "Lei",
+"numero": "Lei 5.172/1966 (CTN)",
+"ano": 1966,
+"data": "1966-10-25",
+"orgao": "Congresso Nacional",
+"ementa": "Código Tributário Nacional: normas gerais, fato gerador, obrigação, lançamento, crédito tributário, decadência e prescrição (5 anos), responsabilidade.",
+"temas": [
+"normas gerais",
+"decadência",
+"responsabilidade"
+],
+"tributos": [
+"todos"
+],
+"aplica": [
+"servico",
+"mercadoria",
+"importacao",
+"exportacao"
+],
+"vigencia": "Em vigor (recepcionado como lei complementar)",
+"casos": [
+"Prazo de guarda de documentos (art. 173)",
+"Responsabilidade do tomador/solidariedade (arts. 124 e 128)"
+],
+"link": "https://www.planalto.gov.br/ccivil_03/leis/l5172compilado.htm",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "dl37",
+"tipo": "Decreto-Lei",
+"numero": "Decreto-Lei 37/1966",
+"ano": 1966,
+"data": "1966-11-18",
+"orgao": "Presidência da República",
+"ementa": "Imposto de Importação: fato gerador, base de cálculo, contribuinte, despacho aduaneiro.",
+"temas": [
+"aduaneiro",
+"importação"
+],
+"tributos": [
+"II"
+],
+"aplica": [
+"importacao"
+],
+"vigencia": "Em vigor",
+"casos": [
+"Importação de mercadoria por conta própria ou por encomenda"
+],
+"link": "https://www.planalto.gov.br/ccivil_03/decreto-lei/del0037.htm",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "l4506",
+"tipo": "Lei",
+"numero": "Lei 4.506/1964",
+"ano": 1964,
+"data": "1964-11-30",
+"orgao": "Congresso Nacional",
+"ementa": "Imposto de Renda: rendimentos, despesas dedutíveis e indedutíveis, depreciação, aluguéis e royalties.",
+"temas": [
+"IRPJ",
+"dedutibilidade",
+"depreciação"
+],
+"tributos": [
+"IRPJ"
+],
+"aplica": [
+"servico",
+"mercadoria"
+],
+"vigencia": "Em vigor com alterações",
+"casos": [
+"Dedutibilidade de despesas no Lucro Real (art. 47)",
+"Locação de bens e equipamentos como despesa operacional"
+],
+"link": "https://www.planalto.gov.br/ccivil_03/leis/l4506.htm",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "l5194",
+"tipo": "Lei",
+"numero": "Lei 5.194/1966",
+"ano": 1966,
+"data": "1966-12-24",
+"orgao": "Congresso Nacional",
+"ementa": "Exercício das profissões de engenheiro, arquiteto e agrônomo; Sistema CONFEA/CREA.",
+"temas": [
+"construção civil",
+"CREA"
+],
+"tributos": [],
+"aplica": [
+"servico"
+],
+"vigencia": "Em vigor",
+"casos": [
+"Obra sem responsável técnico: infração (art. 73)"
+],
+"link": "https://www.planalto.gov.br/ccivil_03/leis/l5194.htm",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "l6496",
+"tipo": "Lei",
+"numero": "Lei 6.496/1977",
+"ano": 1977,
+"data": "1977-12-07",
+"orgao": "Congresso Nacional",
+"ementa": "Anotação de Responsabilidade Técnica (ART) obrigatória em obras e serviços de engenharia.",
+"temas": [
+"construção civil",
+"ART"
+],
+"tributos": [],
+"aplica": [
+"servico"
+],
+"vigencia": "Em vigor",
+"casos": [
+"ART antes do início do serviço; número da ART na NFS-e"
+],
+"link": "https://www.planalto.gov.br/ccivil_03/leis/l6496.htm",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "l7689",
+"tipo": "Lei",
+"numero": "Lei 7.689/1988",
+"ano": 1988,
+"data": "1988-12-15",
+"orgao": "Congresso Nacional",
+"ementa": "Institui a Contribuição Social sobre o Lucro Líquido (CSLL): alíquota de 9% (15% a 20% para financeiras).",
+"temas": [
+"CSLL"
+],
+"tributos": [
+"CSLL"
+],
+"aplica": [
+"servico",
+"mercadoria"
+],
+"vigencia": "Em vigor",
+"casos": [
+"CSLL 9% sobre lucro real ou base presumida"
+],
+"link": "https://www.planalto.gov.br/ccivil_03/leis/l7689.htm",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "l7713",
+"tipo": "Lei",
+"numero": "Lei 7.713/1988",
+"ano": 1988,
+"data": "1988-12-22",
+"orgao": "Congresso Nacional",
+"ementa": "Imposto de Renda da pessoa física: rendimentos tributáveis, retenção na fonte, tabela progressiva.",
+"temas": [
+"IRRF",
+"pessoa física"
+],
+"tributos": [
+"IRRF"
+],
+"aplica": [
+"servico"
+],
+"vigencia": "Em vigor com alterações",
+"casos": [
+"IRRF sobre pagamentos a pessoa física (carnê-leão, pró-labore)"
+],
+"link": "https://www.planalto.gov.br/ccivil_03/leis/l7713.htm",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "l8137",
+"tipo": "Lei",
+"numero": "Lei 8.137/1990",
+"ano": 1990,
+"data": "1990-12-27",
+"orgao": "Congresso Nacional",
+"ementa": "Crimes contra a ordem tributária: omissão de receita, nota fiscal falsa, não recolhimento de tributo retido.",
+"temas": [
+"penal tributário",
+"retenção"
+],
+"tributos": [
+"todos"
+],
+"aplica": [
+"servico",
+"mercadoria"
+],
+"vigencia": "Em vigor",
+"casos": [
+"Deixar de recolher INSS/ISS retido do prestador (art. 2º, II)"
+],
+"link": "https://www.planalto.gov.br/ccivil_03/leis/l8137.htm",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "l8212",
+"tipo": "Lei",
+"numero": "Lei 8.212/1991",
+"ano": 1991,
+"data": "1991-07-24",
+"orgao": "Congresso Nacional",
+"ementa": "Custeio da Seguridade Social: contribuição patronal (art. 22: 20% + RAT), retenção de 11% na cessão de mão de obra e empreitada (art. 31), solidariedade na construção civil (art. 30, VI), contribuinte individual (dedução de 45%, art. 30, §4º).",
+"temas": [
+"INSS",
+"retenção",
+"cessão de mão de obra",
+"construção civil",
+"folha"
+],
+"tributos": [
+"INSS"
+],
+"aplica": [
+"servico"
+],
+"vigencia": "Em vigor com alterações",
+"casos": [
+"Retenção de 11% sobre a NF de serviço com cessão de mão de obra ou empreitada parcial",
+"CPP de 20% sobre a folha fora do Simples e no Anexo IV",
+"Solidariedade do dono da obra"
+],
+"link": "https://www.planalto.gov.br/ccivil_03/leis/l8212cons.htm",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "l8218",
+"tipo": "Lei",
+"numero": "Lei 8.218/1991",
+"ano": 1991,
+"data": "1991-08-29",
+"orgao": "Congresso Nacional",
+"ementa": "Impostos e contribuições federais: escrituração digital, multas por descumprimento de obrigação acessória (art. 12), redução de multas.",
+"temas": [
+"obrigações acessórias",
+"multas"
+],
+"tributos": [
+"todos"
+],
+"aplica": [
+"servico",
+"mercadoria"
+],
+"vigencia": "Em vigor com alterações",
+"casos": [
+"Multa por arquivo digital fora do padrão (SPED)"
+],
+"link": "https://www.planalto.gov.br/ccivil_03/leis/l8218.htm",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "l8383",
+"tipo": "Lei",
+"numero": "Lei 8.383/1991",
+"ano": 1991,
+"data": "1991-12-30",
+"orgao": "Congresso Nacional",
+"ementa": "Compensação de tributos federais pagos a maior (art. 66), UFIR, regras de IR.",
+"temas": [
+"compensação"
+],
+"tributos": [
+"todos"
+],
+"aplica": [
+"servico",
+"mercadoria"
+],
+"vigencia": "Em vigor com alterações",
+"casos": [
+"Compensação de retenções pagas a maior"
+],
+"link": "https://www.planalto.gov.br/ccivil_03/leis/l8383.htm",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "l8541",
+"tipo": "Lei",
+"numero": "Lei 8.541/1992",
+"ano": 1992,
+"data": "1992-12-23",
+"orgao": "Congresso Nacional",
+"ementa": "Imposto de Renda das pessoas jurídicas: lucro presumido e arbitrado, multas, pagamento.",
+"temas": [
+"IRPJ",
+"lucro presumido"
+],
+"tributos": [
+"IRPJ"
+],
+"aplica": [
+"servico",
+"mercadoria"
+],
+"vigencia": "Em vigor com alterações",
+"casos": [
+"Regras históricas do presumido"
+],
+"link": "https://www.planalto.gov.br/ccivil_03/leis/l8541.htm",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "l8846",
+"tipo": "Lei",
+"numero": "Lei 8.846/1994",
+"ano": 1994,
+"data": "1994-01-21",
+"orgao": "Congresso Nacional",
+"ementa": "Emissão obrigatória de documento fiscal na venda de mercadoria e prestação de serviço; multas por não emissão.",
+"temas": [
+"documento fiscal",
+"obrigações acessórias"
+],
+"tributos": [
+"todos"
+],
+"aplica": [
+"servico",
+"mercadoria"
+],
+"vigencia": "Em vigor",
+"casos": [
+"Obrigação de emitir nota no momento da operação"
+],
+"link": "https://www.planalto.gov.br/ccivil_03/leis/l8846.htm",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "l8894",
+"tipo": "Lei",
+"numero": "Lei 8.894/1994",
+"ano": 1994,
+"data": "1994-06-21",
+"orgao": "Congresso Nacional",
+"ementa": "IOF sobre operações de crédito, câmbio, seguro e títulos: alíquotas máximas.",
+"temas": [
+"IOF",
+"câmbio"
+],
+"tributos": [
+"IOF"
+],
+"aplica": [
+"importacao",
+"exportacao"
+],
+"vigencia": "Em vigor",
+"casos": [
+"IOF-câmbio na remessa por importação de serviço (regulamento: Decreto 6.306)"
+],
+"link": "https://www.planalto.gov.br/ccivil_03/leis/l8894.htm",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "l8981",
+"tipo": "Lei",
+"numero": "Lei 8.981/1995",
+"ano": 1995,
+"data": "1995-01-20",
+"orgao": "Congresso Nacional",
+"ementa": "Legislação tributária federal: estimativa mensal do IRPJ, lucro presumido (art. 26), prejuízo fiscal, CSLL.",
+"temas": [
+"IRPJ",
+"lucro real",
+"estimativa"
+],
+"tributos": [
+"IRPJ",
+"CSLL"
+],
+"aplica": [
+"servico",
+"mercadoria"
+],
+"vigencia": "Em vigor com alterações",
+"casos": [
+"Pagamento mensal por estimativa no Lucro Real anual"
+],
+"link": "https://www.planalto.gov.br/ccivil_03/leis/l8981.htm",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "l9065",
+"tipo": "Lei",
+"numero": "Lei 9.065/1995",
+"ano": 1995,
+"data": "1995-06-20",
+"orgao": "Congresso Nacional",
+"ementa": "Compensação de prejuízos fiscais limitada a 30% do lucro real (art. 15); base negativa da CSLL (art. 16); juros SELIC em tributos federais.",
+"temas": [
+"lucro real",
+"prejuízo fiscal"
+],
+"tributos": [
+"IRPJ",
+"CSLL"
+],
+"aplica": [
+"servico",
+"mercadoria"
+],
+"vigencia": "Em vigor",
+"casos": [
+"Trava de 30% na compensação de prejuízo"
+],
+"link": "https://www.planalto.gov.br/ccivil_03/leis/l9065.htm",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "l9249",
+"tipo": "Lei",
+"numero": "Lei 9.249/1995",
+"ano": 1995,
+"data": "1995-12-26",
+"orgao": "Congresso Nacional",
+"ementa": "IRPJ e CSLL: percentuais de presunção do Lucro Presumido (art. 15: 8% regra geral, 1,6% revenda de combustíveis, 16% transporte de passageiros, 32% serviços; 8% para construção com todos os materiais e serviços hospitalares), base da CSLL (art. 20: 12% e 32%), isenção de lucros distribuídos (art. 10), juros sobre capital próprio.",
+"temas": [
+"lucro presumido",
+"IRPJ",
+"CSLL",
+"presunção",
+"construção civil",
+"saúde"
+],
+"tributos": [
+"IRPJ",
+"CSLL"
+],
+"aplica": [
+"servico",
+"mercadoria"
+],
+"vigencia": "Em vigor com alterações",
+"casos": [
+"Presunção 32% para serviços em geral",
+"Presunção 8%/12% para empreitada com fornecimento de todos os materiais (art. 15, §1º, III, 'b')",
+"Serviços hospitalares 8%/12% (STJ, Tema 217)"
+],
+"link": "https://www.planalto.gov.br/ccivil_03/leis/l9249.htm",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "l9250",
+"tipo": "Lei",
+"numero": "Lei 9.250/1995",
+"ano": 1995,
+"data": "1995-12-26",
+"orgao": "Congresso Nacional",
+"ementa": "Imposto de Renda da pessoa física: declaração anual, deduções, restituição.",
+"temas": [
+"IRPF"
+],
+"tributos": [
+"IRRF"
+],
+"aplica": [
+"servico"
+],
+"vigencia": "Em vigor com alterações",
+"casos": [
+"Compensação do IRRF na declaração do prestador pessoa física"
+],
+"link": "https://www.planalto.gov.br/ccivil_03/leis/l9250.htm",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "l9311",
+"tipo": "Lei",
+"numero": "Lei 9.311/1996",
+"ano": 1996,
+"data": "1996-10-24",
+"orgao": "Congresso Nacional",
+"ementa": "CPMF (extinta em 2007). Referência histórica.",
+"temas": [
+"histórico"
+],
+"tributos": [],
+"aplica": [],
+"vigencia": "Revogada/extinta (2007)",
+"casos": [],
+"link": "https://www.planalto.gov.br/ccivil_03/leis/l9311.htm",
+"status": "revogada",
+"esfera": "federal"
+},
+{
+"id": "l9316",
+"tipo": "Lei",
+"numero": "Lei 9.316/1996",
+"ano": 1996,
+"data": "1996-11-22",
+"orgao": "Congresso Nacional",
+"ementa": "CSLL indedutível da base do IRPJ e da própria CSLL (art. 1º).",
+"temas": [
+"CSLL",
+"lucro real"
+],
+"tributos": [
+"IRPJ",
+"CSLL"
+],
+"aplica": [
+"servico",
+"mercadoria"
+],
+"vigencia": "Em vigor",
+"casos": [
+"Adição da CSLL no LALUR"
+],
+"link": "https://www.planalto.gov.br/ccivil_03/leis/l9316.htm",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "l9317",
+"tipo": "Lei",
+"numero": "Lei 9.317/1996",
+"ano": 1996,
+"data": "1996-12-05",
+"orgao": "Congresso Nacional",
+"ementa": "SIMPLES federal (antigo). Revogada pela LC 123/2006.",
+"temas": [
+"histórico",
+"Simples"
+],
+"tributos": [],
+"aplica": [],
+"vigencia": "Revogada em 01/07/2007",
+"casos": [],
+"link": "https://www.planalto.gov.br/ccivil_03/leis/l9317.htm",
+"status": "revogada",
+"esfera": "federal"
+},
+{
+"id": "l9363",
+"tipo": "Lei",
+"numero": "Lei 9.363/1996",
+"ano": 1996,
+"data": "1996-12-13",
+"orgao": "Congresso Nacional",
+"ementa": "Crédito presumido de IPI para ressarcimento de PIS/COFINS ao exportador.",
+"temas": [
+"exportação",
+"IPI",
+"crédito presumido"
+],
+"tributos": [
+"IPI",
+"PIS",
+"COFINS"
+],
+"aplica": [
+"exportacao",
+"mercadoria"
+],
+"vigencia": "Em vigor com alterações",
+"casos": [
+"Produtor-exportador de mercadorias"
+],
+"link": "https://www.planalto.gov.br/ccivil_03/leis/l9363.htm",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "l9430",
+"tipo": "Lei",
+"numero": "Lei 9.430/1996",
+"ano": 1996,
+"data": "1996-12-27",
+"orgao": "Congresso Nacional",
+"ementa": "Legislação tributária federal: apuração trimestral do IRPJ/CSLL (art. 1º), Lucro Presumido (arts. 25 e 26), Lucro Arbitrado, retenção de IRPJ/CSLL/COFINS/PIS por órgãos públicos federais (art. 64), preços de transferência, multas de ofício (art. 44), compensação (art. 74).",
+"temas": [
+"IRPJ",
+"CSLL",
+"lucro presumido",
+"retenção",
+"órgão público",
+"compensação"
+],
+"tributos": [
+"IRPJ",
+"CSLL",
+"PIS",
+"COFINS"
+],
+"aplica": [
+"servico",
+"mercadoria"
+],
+"vigencia": "Em vigor com alterações",
+"casos": [
+"Apuração trimestral do presumido",
+"Retenção pela administração pública federal (regulamento: IN 1.234)",
+"PER/DCOMP (art. 74)"
+],
+"link": "https://www.planalto.gov.br/ccivil_03/leis/l9430.htm",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "l9532",
+"tipo": "Lei",
+"numero": "Lei 9.532/1997",
+"ano": 1997,
+"data": "1997-12-10",
+"orgao": "Congresso Nacional",
+"ementa": "Altera a legislação do IR: imunidade e isenção de entidades, depreciação acelerada, regras de IRPJ.",
+"temas": [
+"IRPJ",
+"imunidade"
+],
+"tributos": [
+"IRPJ",
+"CSLL"
+],
+"aplica": [
+"servico",
+"mercadoria"
+],
+"vigencia": "Em vigor com alterações",
+"casos": [
+"Requisitos de imunidade de entidades sem fins lucrativos (art. 12)"
+],
+"link": "https://www.planalto.gov.br/ccivil_03/leis/l9532.htm",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "l9718",
+"tipo": "Lei",
+"numero": "Lei 9.718/1998",
+"ano": 1998,
+"data": "1998-11-27",
+"orgao": "Congresso Nacional",
+"ementa": "PIS e COFINS no regime cumulativo (0,65% e 3%) sobre a receita bruta; limite de receita do Lucro Presumido (R$ 78 milhões, art. 13).",
+"temas": [
+"PIS",
+"COFINS",
+"cumulativo",
+"lucro presumido"
+],
+"tributos": [
+"PIS",
+"COFINS"
+],
+"aplica": [
+"servico",
+"mercadoria"
+],
+"vigencia": "Em vigor com alterações; PIS/COFINS extintos em 2027 pela CBS",
+"transicao": "CBS substitui PIS/COFINS a partir de 01/01/2027 (LC 214)",
+"casos": [
+"Empresa do Lucro Presumido: PIS 0,65% + COFINS 3%, sem crédito"
+],
+"link": "https://www.planalto.gov.br/ccivil_03/leis/l9718compilada.htm",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "l9779",
+"tipo": "Lei",
+"numero": "Lei 9.779/1999",
+"ano": 1999,
+"data": "1999-01-19",
+"orgao": "Congresso Nacional",
+"ementa": "IRRF de 25% sobre remessas ao exterior por serviços (art. 7º) e 15% em outros rendimentos; crédito de IPI.",
+"temas": [
+"importação de serviço",
+"IRRF",
+"remessa"
+],
+"tributos": [
+"IRRF"
+],
+"aplica": [
+"importacao"
+],
+"vigencia": "Em vigor",
+"casos": [
+"Remessa ao exterior por serviço técnico: IRRF (ver tratado)"
+],
+"link": "https://www.planalto.gov.br/ccivil_03/leis/l9779.htm",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "d3048",
+"tipo": "Decreto",
+"numero": "Decreto 3.048/1999",
+"ano": 1999,
+"data": "1999-05-06",
+"orgao": "Presidência da República",
+"ementa": "Regulamento da Previdência Social: retenção de 11% (art. 219), exclusão de materiais e equipamentos da base (art. 219, §7º), empreitada total e dispensa (art. 221-A), obras de construção civil.",
+"temas": [
+"INSS",
+"retenção",
+"construção civil",
+"equipamentos"
+],
+"tributos": [
+"INSS"
+],
+"aplica": [
+"servico"
+],
+"vigencia": "Em vigor com alterações",
+"casos": [
+"Exclusão de material e equipamento da base retida quando previstos em contrato e discriminados na NF",
+"Empreitada total com órgão público: sem retenção"
+],
+"link": "https://www.planalto.gov.br/ccivil_03/decreto/d3048.htm",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "mp2158",
+"tipo": "Medida Provisória",
+"numero": "MP 2.158-35/2001",
+"ano": 2001,
+"data": "2001-08-24",
+"orgao": "Presidência da República",
+"ementa": "Isenção de PIS/COFINS sobre receitas de exportação de serviços com ingresso de divisas (art. 14, III); regras de CSLL e IRPJ.",
+"temas": [
+"exportação",
+"PIS",
+"COFINS"
+],
+"tributos": [
+"PIS",
+"COFINS"
+],
+"aplica": [
+"exportacao"
+],
+"vigencia": "Em vigor (EC 32/2001)",
+"casos": [
+"Exportação de serviço para o exterior com pagamento em moeda estrangeira"
+],
+"link": "https://www.planalto.gov.br/ccivil_03/mpv/2158-35.htm",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "l10168",
+"tipo": "Lei",
+"numero": "Lei 10.168/2000",
+"ano": 2000,
+"data": "2000-12-29",
+"orgao": "Congresso Nacional",
+"ementa": "CIDE de 10% sobre remessas ao exterior por royalties, transferência de tecnologia, serviços técnicos e assistência administrativa (art. 2º).",
+"temas": [
+"importação de serviço",
+"CIDE",
+"remessa"
+],
+"tributos": [
+"CIDE"
+],
+"aplica": [
+"importacao"
+],
+"vigencia": "Em vigor",
+"casos": [
+"Pagamento de software/serviço técnico a fornecedor estrangeiro"
+],
+"link": "https://www.planalto.gov.br/ccivil_03/leis/l10168.htm",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "l10637",
+"tipo": "Lei",
+"numero": "Lei 10.637/2002",
+"ano": 2002,
+"data": "2002-12-30",
+"orgao": "Congresso Nacional",
+"ementa": "PIS não cumulativo (1,65%) no Lucro Real: créditos sobre insumos, energia, aluguéis, máquinas e equipamentos locados (art. 3º); exportação sem incidência (art. 5º).",
+"temas": [
+"PIS",
+"não cumulativo",
+"crédito",
+"lucro real",
+"exportação"
+],
+"tributos": [
+"PIS"
+],
+"aplica": [
+"servico",
+"mercadoria",
+"exportacao"
+],
+"vigencia": "Em vigor; extinta em 2027 pela CBS",
+"transicao": "CBS substitui o PIS a partir de 01/01/2027",
+"casos": [
+"Crédito de PIS sobre locação de máquinas e equipamentos (art. 3º, IV)",
+"Conceito de insumo: essencialidade (STJ, Tema 779)"
+],
+"link": "https://www.planalto.gov.br/ccivil_03/leis/2002/l10637.htm",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "l10684",
+"tipo": "Lei",
+"numero": "Lei 10.684/2003",
+"ano": 2003,
+"data": "2003-05-30",
+"orgao": "Congresso Nacional",
+"ementa": "Alíquota da CSLL de 32% da receita para prestadores de serviço no presumido (art. 22); parcelamento PAES.",
+"temas": [
+"CSLL",
+"lucro presumido"
+],
+"tributos": [
+"CSLL"
+],
+"aplica": [
+"servico"
+],
+"vigencia": "Em vigor com alterações",
+"casos": [
+"Base da CSLL 32% para serviços"
+],
+"link": "https://www.planalto.gov.br/ccivil_03/leis/2003/l10.684.htm",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "lc116",
+"tipo": "Lei Complementar",
+"numero": "LC 116/2003",
+"ano": 2003,
+"data": "2003-07-31",
+"orgao": "Congresso Nacional",
+"ementa": "ISS: lista de serviços (itens 1 a 40), local da incidência (art. 3º), responsável/retenção pelo tomador (art. 6º), base de cálculo e dedução de materiais nos itens 7.02 e 7.05 (art. 7º, §2º, I), alíquotas de 2% a 5% (arts. 8º e 8º-A), exportação não tributada (art. 2º, I), importação de serviço (art. 1º, §1º).",
+"temas": [
+"ISS",
+"lista de serviços",
+"retenção",
+"construção civil",
+"exportação",
+"importação"
+],
+"tributos": [
+"ISS"
+],
+"aplica": [
+"servico",
+"importacao",
+"exportacao"
+],
+"vigencia": "Em vigor; ISS extinto em 2033 pelo IBS",
+"transicao": "Redução gradual 2029–2032; extinção em 2033 (EC 132)",
+"casos": [
+"ISS devido no município da obra (art. 3º, III)",
+"Tomador PJ responsável nos itens 3.05, 7.02, 7.04, 7.05, 7.09, 7.10, 7.12, 7.16, 7.17, 7.19, 11.02, 17.05 e 17.10 (art. 6º, §2º, II)",
+"Dedução de materiais fornecidos pelo prestador (7.02 e 7.05)"
+],
+"link": "https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp116.htm",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "l10833",
+"tipo": "Lei",
+"numero": "Lei 10.833/2003",
+"ano": 2003,
+"data": "2003-12-29",
+"orgao": "Congresso Nacional",
+"ementa": "COFINS não cumulativa (7,6%) e créditos (art. 3º); exportação sem incidência (art. 6º); retenção de CSLL, COFINS e PIS (4,65%) por PJ tomadora de limpeza, conservação, manutenção, segurança, vigilância, locação de mão de obra, assessoria e serviços profissionais (art. 30); dispensa para optantes do Simples.",
+"temas": [
+"COFINS",
+"não cumulativo",
+"crédito",
+"retenção",
+"CSRF",
+"exportação"
+],
+"tributos": [
+"COFINS",
+"PIS",
+"CSLL"
+],
+"aplica": [
+"servico",
+"mercadoria",
+"exportacao"
+],
+"vigencia": "Em vigor; COFINS extinta em 2027 pela CBS",
+"transicao": "CBS substitui a COFINS a partir de 01/01/2027",
+"casos": [
+"CSRF 4,65% sobre serviços profissionais entre PJs (acima de R$ 215,05)",
+"Execução de obra de construção civil fora do rol do art. 30: sem CSRF"
+],
+"link": "https://www.planalto.gov.br/ccivil_03/leis/2003/l10.833.htm",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "l10865",
+"tipo": "Lei",
+"numero": "Lei 10.865/2004",
+"ano": 2004,
+"data": "2004-04-30",
+"orgao": "Congresso Nacional",
+"ementa": "PIS/PASEP-Importação e COFINS-Importação sobre bens e serviços do exterior: fato gerador, base de cálculo (art. 7º), alíquotas (art. 8º: 1,65% e 7,6% em serviços; 2,1% e 9,65% em bens), créditos no regime não cumulativo (art. 15).",
+"temas": [
+"importação",
+"PIS",
+"COFINS"
+],
+"tributos": [
+"PIS",
+"COFINS"
+],
+"aplica": [
+"importacao"
+],
+"vigencia": "Em vigor; extinta em 2027 pela CBS-Importação",
+"transicao": "CBS na importação a partir de 2027 (LC 214)",
+"casos": [
+"Importação de serviço: 9,25% sobre o valor pago, antes do IRRF, acrescido do ISS e das próprias contribuições"
+],
+"link": "https://www.planalto.gov.br/ccivil_03/_ato2004-2006/2004/lei/l10.865.htm",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "l10925",
+"tipo": "Lei",
+"numero": "Lei 10.925/2004",
+"ano": 2004,
+"data": "2004-07-23",
+"orgao": "Congresso Nacional",
+"ementa": "Alíquota zero de PIS/COFINS para produtos da cesta básica e insumos agropecuários; crédito presumido do agronegócio.",
+"temas": [
+"PIS",
+"COFINS",
+"alíquota zero",
+"mercadoria"
+],
+"tributos": [
+"PIS",
+"COFINS"
+],
+"aplica": [
+"mercadoria"
+],
+"vigencia": "Em vigor com alterações",
+"casos": [
+"Venda de produtos com alíquota zero (CST 06)"
+],
+"link": "https://www.planalto.gov.br/ccivil_03/_ato2004-2006/2004/lei/l10.925.htm",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "l11196",
+"tipo": "Lei",
+"numero": "Lei 11.196/2005 (Lei do Bem)",
+"ano": 2005,
+"data": "2005-11-21",
+"orgao": "Congresso Nacional",
+"ementa": "Incentivos à inovação tecnológica (exclusão de 60% a 100% dos dispêndios de P&D no Lucro Real), regime para exportadoras de software (REPES), PIS/COFINS zero em informática (Lei do Bem).",
+"temas": [
+"benefício fiscal",
+"inovação",
+"lucro real",
+"software"
+],
+"tributos": [
+"IRPJ",
+"CSLL",
+"PIS",
+"COFINS"
+],
+"aplica": [
+"servico",
+"mercadoria",
+"exportacao"
+],
+"vigencia": "Em vigor com alterações",
+"casos": [
+"Empresa de TI no Lucro Real com P&D"
+],
+"link": "https://www.planalto.gov.br/ccivil_03/_ato2004-2006/2005/lei/l11196.htm",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "lc123",
+"tipo": "Lei Complementar",
+"numero": "LC 123/2006",
+"ano": 2006,
+"data": "2006-12-14",
+"orgao": "Congresso Nacional",
+"ementa": "Estatuto da Microempresa e EPP — Simples Nacional: enquadramento e limites (art. 3º: R$ 4,8 milhões; sublimite R$ 3,6 milhões), tributos abrangidos e não abrangidos (art. 13), vedações (art. 17), alíquotas e Anexos I a V, Fator R de 28% (art. 18, §§5º-I a 5º-M), ISS com dedução de materiais (art. 18, §23), exportação (art. 18, §14), MEI (art. 18-A), retenção de ISS (art. 21, §4º).",
+"temas": [
+"Simples Nacional",
+"MEI",
+"Fator R",
+"anexos",
+"exportação",
+"retenção"
+],
+"tributos": [
+"IRPJ",
+"CSLL",
+"PIS",
+"COFINS",
+"CPP",
+"ICMS",
+"ISS"
+],
+"aplica": [
+"servico",
+"mercadoria",
+"exportacao"
+],
+"vigencia": "Em vigor com alterações (LC 155, 188, 224)",
+"transicao": "IBS/CBS no DAS a partir de 2027; opção pelo regime regular (LC 214, art. 41)",
+"casos": [
+"Construção civil, vigilância, limpeza e advocacia no Anexo IV (§5º-C)",
+"Serviços intelectuais no Anexo III ou V pelo Fator R",
+"Receita de exportação segregada sem PIS/COFINS/ISS",
+"Vedações ao Simples: art. 17 (factoring, sócio no exterior, ente público, débitos, energia, automóveis, combustíveis, cigarros/bebidas, cessão de mão de obra, incorporação, locação de imóveis próprios)",
+"MEI: art. 18-A (R$ 81 mil/ano, DAS fixo, vedado ao Anexo V, um estabelecimento, 1 empregado), art. 18-B (CPP de 20% do contratante em serviços de construção/manutenção), art. 18-C",
+"Limites: R$ 4,8 milhões (art. 3º, II) e sublimite de R$ 3,6 milhões para ISS/ICMS (art. 13-A e art. 19)"
+],
+"link": "https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp123.htm",
+"status": "vigente",
+"esfera": "federal",
+"conferido": "Texto consolidado do Planalto (PDF recebido em 09/10/2026), com LC 147/2014, 155/2016, 167/2019, 188/2021, 214/2025 e 227/2026"
+},
+{
+"id": "d6306",
+"tipo": "Decreto",
+"numero": "Decreto 6.306/2007",
+"ano": 2007,
+"data": "2007-12-14",
+"orgao": "Presidência da República",
+"ementa": "Regulamento do IOF: câmbio (art. 15-B), crédito, seguros, títulos.",
+"temas": [
+"IOF",
+"câmbio",
+"importação"
+],
+"tributos": [
+"IOF"
+],
+"aplica": [
+"importacao",
+"exportacao"
+],
+"vigencia": "Em vigor com alterações",
+"casos": [
+"IOF-câmbio em remessa por importação de serviço"
+],
+"link": "https://www.planalto.gov.br/ccivil_03/decreto/d6306.htm",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "lc128",
+"tipo": "Lei Complementar",
+"numero": "LC 128/2008",
+"ano": 2008,
+"data": "2008-12-19",
+"orgao": "Congresso Nacional",
+"ementa": "Cria o MEI (Microempreendedor Individual) e altera a LC 123.",
+"temas": [
+"MEI",
+"Simples Nacional"
+],
+"tributos": [
+"INSS",
+"ISS",
+"ICMS"
+],
+"aplica": [
+"servico",
+"mercadoria"
+],
+"vigencia": "Em vigor",
+"casos": [
+"MEI prestador de serviço: ISS fixo no DAS-MEI; contratante PJ recolhe CPP de 20% em certas atividades"
+],
+"link": "https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp128.htm",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "d6759",
+"tipo": "Decreto",
+"numero": "Decreto 6.759/2009",
+"ano": 2009,
+"data": "2009-02-05",
+"orgao": "Presidência da República",
+"ementa": "Regulamento Aduaneiro: importação e exportação de mercadorias, II, IE, IPI vinculado, PIS/COFINS-Importação, regimes aduaneiros especiais (drawback, admissão temporária), valoração, infrações.",
+"temas": [
+"aduaneiro",
+"importação",
+"exportação",
+"drawback"
+],
+"tributos": [
+"II",
+"IE",
+"IPI",
+"PIS",
+"COFINS"
+],
+"aplica": [
+"importacao",
+"exportacao",
+"mercadoria"
+],
+"vigencia": "Em vigor com alterações",
+"casos": [
+"Despacho de importação",
+"Drawback para exportador"
+],
+"link": "https://www.planalto.gov.br/ccivil_03/_ato2007-2010/2009/decreto/d6759.htm",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "l11941",
+"tipo": "Lei",
+"numero": "Lei 11.941/2009",
+"ano": 2009,
+"data": "2009-05-27",
+"orgao": "Congresso Nacional",
+"ementa": "Regime Tributário de Transição (RTT) para neutralidade das normas contábeis (IFRS); parcelamentos; multas.",
+"temas": [
+"lucro real",
+"contabilidade"
+],
+"tributos": [
+"IRPJ",
+"CSLL"
+],
+"aplica": [
+"servico",
+"mercadoria"
+],
+"vigencia": "Em vigor com alterações (RTT substituído pela Lei 12.973)",
+"casos": [
+"Histórico do ajuste contábil-fiscal"
+],
+"link": "https://www.planalto.gov.br/ccivil_03/_ato2007-2010/2009/lei/l11941.htm",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "d7212",
+"tipo": "Decreto",
+"numero": "Decreto 7.212/2010 (RIPI)",
+"ano": 2010,
+"data": "2010-06-15",
+"orgao": "Presidência da República",
+"ementa": "Regulamento do IPI: industrialização, estabelecimento industrial e equiparado, TIPI, créditos, suspensão, isenção.",
+"temas": [
+"IPI",
+"industrialização",
+"mercadoria"
+],
+"tributos": [
+"IPI"
+],
+"aplica": [
+"mercadoria",
+"importacao"
+],
+"vigencia": "Em vigor; IPI reduzido a zero (exceto ZFM) a partir de 2027",
+"transicao": "EC 132: IPI mantido só para proteção da Zona Franca",
+"casos": [
+"Construtora não é contribuinte de IPI (crédito vira custo)"
+],
+"link": "https://www.planalto.gov.br/ccivil_03/_ato2007-2010/2010/decreto/d7212.htm",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "l12378",
+"tipo": "Lei",
+"numero": "Lei 12.378/2010",
+"ano": 2010,
+"data": "2010-12-31",
+"orgao": "Congresso Nacional",
+"ementa": "Regulamenta arquitetura e urbanismo; cria o CAU e o RRT (Registro de Responsabilidade Técnica).",
+"temas": [
+"construção civil",
+"RRT"
+],
+"tributos": [],
+"aplica": [
+"servico"
+],
+"vigencia": "Em vigor",
+"casos": [
+"RRT na NFS-e de projeto arquitetônico"
+],
+"link": "https://www.planalto.gov.br/ccivil_03/_ato2007-2010/2010/lei/l12378.htm",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "l12546",
+"tipo": "Lei",
+"numero": "Lei 12.546/2011",
+"ano": 2011,
+"data": "2011-12-14",
+"orgao": "Congresso Nacional",
+"ementa": "Desoneração da folha (CPRB) para setores como construção civil, TI e call center; retenção de 3,5% em vez de 11%; REINTEGRA.",
+"temas": [
+"INSS",
+"CPRB",
+"desoneração",
+"construção civil"
+],
+"tributos": [
+"INSS"
+],
+"aplica": [
+"servico",
+"mercadoria"
+],
+"vigencia": "CPRB em transição 2024–2027 (Lei 14.973); extinção em 2028",
+"transicao": "Reoneração gradual: 2025 80%/5%, 2026 60%/10%, 2027 40%/15%, 2028 fim",
+"casos": [
+"Construtora optante pela CPRB: retenção de 3,5%"
+],
+"link": "https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2011/lei/l12546.htm",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "l12973",
+"tipo": "Lei",
+"numero": "Lei 12.973/2014",
+"ano": 2014,
+"data": "2014-05-13",
+"orgao": "Congresso Nacional",
+"ementa": "Adequa a legislação do IRPJ/CSLL/PIS/COFINS às normas contábeis IFRS; conceito de receita bruta (art. 12 do DL 1.598); ajustes no Lucro Real; depreciação e arrendamento.",
+"temas": [
+"lucro real",
+"receita bruta",
+"contabilidade"
+],
+"tributos": [
+"IRPJ",
+"CSLL",
+"PIS",
+"COFINS"
+],
+"aplica": [
+"servico",
+"mercadoria"
+],
+"vigencia": "Em vigor",
+"casos": [
+"Definição de receita bruta usada no presumido e no Simples"
+],
+"link": "https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2014/lei/l12973.htm",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "lc155",
+"tipo": "Lei Complementar",
+"numero": "LC 155/2016",
+"ano": 2016,
+"data": "2016-10-27",
+"orgao": "Congresso Nacional",
+"ementa": "Reforma do Simples Nacional a partir de 2018: novos Anexos I a V com alíquota nominal e parcela a deduzir, limite de R$ 4,8 milhões, Fator R de 28%, investidor-anjo.",
+"temas": [
+"Simples Nacional",
+"anexos",
+"Fator R"
+],
+"tributos": [
+"IRPJ",
+"CSLL",
+"PIS",
+"COFINS",
+"CPP",
+"ICMS",
+"ISS"
+],
+"aplica": [
+"servico",
+"mercadoria"
+],
+"vigencia": "Em vigor desde 01/01/2018",
+"casos": [
+"Cálculo da alíquota efetiva: (RBT12 × nominal − parcela a deduzir) ÷ RBT12"
+],
+"link": "https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp155.htm",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "lc157",
+"tipo": "Lei Complementar",
+"numero": "LC 157/2016",
+"ano": 2016,
+"data": "2016-12-29",
+"orgao": "Congresso Nacional",
+"ementa": "Altera a LC 116: alíquota mínima de 2% (art. 8º-A), novos serviços (streaming, aplicativos), vedação de benefícios que reduzam abaixo do mínimo.",
+"temas": [
+"ISS",
+"alíquota mínima"
+],
+"tributos": [
+"ISS"
+],
+"aplica": [
+"servico"
+],
+"vigencia": "Em vigor",
+"casos": [
+"Município não pode cobrar ISS abaixo de 2% (exceto 7.02, 7.05 e 16.01)"
+],
+"link": "https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp157.htm",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "d9580",
+"tipo": "Decreto",
+"numero": "Decreto 9.580/2018 (RIR/2018)",
+"ano": 2018,
+"data": "2018-11-22",
+"orgao": "Presidência da República",
+"ementa": "Regulamento do Imposto de Renda: Lucro Real, Presumido e Arbitrado; IRRF de 1,5% sobre serviços profissionais prestados por PJ (art. 714) e 1% sobre limpeza, conservação, segurança, vigilância e locação de mão de obra (art. 716); remessas ao exterior (arts. 741 e seguintes).",
+"temas": [
+"IRPJ",
+"IRRF",
+"lucro real",
+"lucro presumido",
+"retenção"
+],
+"tributos": [
+"IRPJ",
+"IRRF"
+],
+"aplica": [
+"servico",
+"mercadoria",
+"importacao"
+],
+"vigencia": "Em vigor",
+"casos": [
+"IRRF 1,5% em consultoria, engenharia consultiva, advocacia, contabilidade entre PJs",
+"Execução de obra: fora da lista do art. 714"
+],
+"link": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/decreto/d9580.htm",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "l13874",
+"tipo": "Lei",
+"numero": "Lei 13.874/2019 (Liberdade Econômica)",
+"ano": 2019,
+"data": "2019-09-20",
+"orgao": "Congresso Nacional",
+"ementa": "Declaração de Direitos de Liberdade Econômica: dispensa de alvará para atividades de baixo risco, escrituração digital, presunção de boa-fé.",
+"temas": [
+"simplificação",
+"obrigações acessórias"
+],
+"tributos": [],
+"aplica": [
+"servico",
+"mercadoria"
+],
+"vigencia": "Em vigor",
+"casos": [
+"Abertura de empresa de serviço de baixo risco"
+],
+"link": "https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2019/lei/l13874.htm",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "lc175",
+"tipo": "Lei Complementar",
+"numero": "LC 175/2020",
+"ano": 2020,
+"data": "2020-09-23",
+"orgao": "Congresso Nacional",
+"ementa": "Padrão nacional de obrigação acessória do ISS para planos de saúde, cartões, leasing e fundos (subitens 4.22, 4.23, 5.09, 10.04, 15.01, 15.09); transição da incidência para o domicílio do tomador.",
+"temas": [
+"ISS",
+"obrigações acessórias"
+],
+"tributos": [
+"ISS"
+],
+"aplica": [
+"servico"
+],
+"vigencia": "Em vigor",
+"casos": [
+"Administradoras de cartão e planos de saúde"
+],
+"link": "https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp175.htm",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "l14133",
+"tipo": "Lei",
+"numero": "Lei 14.133/2021 (Licitações)",
+"ano": 2021,
+"data": "2021-04-01",
+"orgao": "Congresso Nacional",
+"ementa": "Nova Lei de Licitações e Contratos: regimes de execução (empreitada por preço global, unitário, integral, contratação integrada), reajuste, retenções e garantias em contratos públicos.",
+"temas": [
+"licitações",
+"construção civil",
+"órgão público"
+],
+"tributos": [],
+"aplica": [
+"servico",
+"mercadoria"
+],
+"vigencia": "Em vigor (exclusiva desde 2024)",
+"casos": [
+"Obra pública por empreitada: retenções da IN 1.234 e dispensa de INSS na empreitada total"
+],
+"link": "https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2021/lei/l14133.htm",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "in2021",
+"tipo": "Instrução Normativa",
+"numero": "IN RFB 2.021/2021",
+"ano": 2021,
+"data": "2021-04-16",
+"orgao": "Receita Federal",
+"ementa": "Contribuições previdenciárias na construção civil: conceitos de empreitada total e parcial (art. 7º), responsabilidade solidária, aferição direta e indireta (SERO), regularização de obra.",
+"temas": [
+"INSS",
+"construção civil",
+"empreitada",
+"SERO"
+],
+"tributos": [
+"INSS"
+],
+"aplica": [
+"servico"
+],
+"vigencia": "Em vigor",
+"casos": [
+"Empreitada total × parcial e efeito na retenção",
+"Regularização de obra para CND"
+],
+"link": "https://normas.receita.fazenda.gov.br/sijut2consulta/link.action?idAto=116805",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "in2061",
+"tipo": "Instrução Normativa",
+"numero": "IN RFB 2.061/2021",
+"ano": 2021,
+"data": "2021-12-23",
+"orgao": "Receita Federal",
+"ementa": "Cadastro Nacional de Obras (CNO): obrigatoriedade de inscrição em até 30 dias do início (art. 18), responsáveis, vinculação ao eSocial e à EFD-Reinf.",
+"temas": [
+"CNO",
+"construção civil",
+"obrigações acessórias"
+],
+"tributos": [
+"INSS"
+],
+"aplica": [
+"servico"
+],
+"vigencia": "Em vigor",
+"casos": [
+"Número do CNO na NFS-e de obra"
+],
+"link": "https://normas.receita.fazenda.gov.br/sijut2consulta/link.action?idAto=122434",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "in2110",
+"tipo": "Instrução Normativa",
+"numero": "IN RFB 2.110/2022",
+"ano": 2022,
+"data": "2022-10-19",
+"orgao": "Receita Federal",
+"ementa": "Normas gerais de tributação previdenciária. Retenção de 11% na cessão de mão de obra e empreitada (arts. 108 a 128): conceitos de cessão de mão de obra (art. 108) e empreitada (art. 109), retenção de 11% do valor bruto da NF (art. 110), serviços sujeitos (arts. 111 e 112), hipóteses em que não se aplica (art. 114: empreitada total, contribuinte individual, transporte de cargas, serviço nas dependências da contratada), dispensa (art. 115), exclusão de materiais e equipamentos não manuais previstos em contrato e discriminados na NF (art. 116), base mínima quando o contrato não traz valores (art. 117: 50%; transporte de passageiros 30%, limpeza hospitalar 65%, limpeza 80%), equipamento inerente ao serviço (art. 118: serviços em geral 50%; construção civil: pavimentação asfáltica 10%, terraplenagem/aterro/dragagem 15%, pontes e viadutos 45%, drenagem 50%, demais com equipamento 35%), base integral (art. 119), dedução de alimentação e vale-transporte (art. 120), destaque 'RETENÇÃO PARA A PREVIDÊNCIA SOCIAL' na NF (art. 121), subcontratação (art. 122). Substitui a IN RFB 971/2009.",
+"temas": [
+"INSS",
+"retenção",
+"construção civil",
+"equipamentos",
+"materiais"
+],
+"tributos": [
+"INSS"
+],
+"aplica": [
+"servico"
+],
+"vigencia": "Em vigor (alterada pela IN 2.289/2025)",
+"casos": [
+"Hipóteses 1 a 4 da base de retenção (arts. 116 a 119)",
+"Locação de equipamento não manual deduzida com contrato e NF discriminada, limitada ao valor da locação (art. 116, §1º)",
+"Taxa de administração nunca deduz (art. 120, §1º)",
+"Destaque 'RETENÇÃO PARA A PREVIDÊNCIA SOCIAL' na nota (art. 121)"
+],
+"link": "https://normas.receita.fazenda.gov.br/sijut2consulta/link.action?idAto=126853",
+"status": "vigente",
+"conferido": "Texto oficial do DOU (PDF recebido em 09/10/2026)",
+"esfera": "federal"
+},
+{
+"id": "in1234",
+"tipo": "Instrução Normativa",
+"numero": "IN RFB 1.234/2012",
+"ano": 2012,
+"data": "2012-01-11",
+"orgao": "Receita Federal",
+"ementa": "Retenção de IRPJ, CSLL, COFINS e PIS nos pagamentos por órgãos públicos federais (Lei 9.430, art. 64): tabela de códigos e alíquotas (6147 construção com material 5,85%; 6188 sem material 9,45%; 6190 engenharia consultiva 9,45%; 8767 demais 9,45%); dispensa para Simples.",
+"temas": [
+"retenção",
+"órgão público",
+"construção civil"
+],
+"tributos": [
+"IRPJ",
+"CSLL",
+"PIS",
+"COFINS"
+],
+"aplica": [
+"servico",
+"mercadoria"
+],
+"vigencia": "Em vigor com alterações",
+"casos": [
+"NF para órgão público federal: código correto evita retenção a maior"
+],
+"link": "https://normas.receita.fazenda.gov.br/sijut2consulta/link.action?idAto=37200",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "in1700",
+"tipo": "Instrução Normativa",
+"numero": "IN RFB 1.700/2017",
+"ano": 2017,
+"data": "2017-03-14",
+"orgao": "Receita Federal",
+"ementa": "Apuração do IRPJ e da CSLL: Lucro Real, Presumido e Arbitrado; percentuais de presunção por atividade (art. 33), inclusive 8% para empreitada com todos os materiais; estimativa; LALUR/LACS.",
+"temas": [
+"IRPJ",
+"CSLL",
+"lucro presumido",
+"lucro real"
+],
+"tributos": [
+"IRPJ",
+"CSLL"
+],
+"aplica": [
+"servico",
+"mercadoria"
+],
+"vigencia": "Em vigor com alterações",
+"casos": [
+"Qual presunção aplicar a cada receita",
+"Adições e exclusões no e-LALUR"
+],
+"link": "https://normas.receita.fazenda.gov.br/sijut2consulta/link.action?idAto=81268",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "in459",
+"tipo": "Instrução Normativa",
+"numero": "IN SRF 459/2004",
+"ano": 2004,
+"data": "2004-10-18",
+"orgao": "Receita Federal",
+"ementa": "Retenção de CSLL, COFINS e PIS (4,65%) entre pessoas jurídicas de direito privado (Lei 10.833, art. 30): serviços alcançados, dispensa para Simples (art. 3º, II) e para pagamentos até R$ 5.000 (hoje R$ 215,05 de retenção).",
+"temas": [
+"retenção",
+"CSRF"
+],
+"tributos": [
+"CSLL",
+"COFINS",
+"PIS"
+],
+"aplica": [
+"servico"
+],
+"vigencia": "Em vigor com alterações",
+"casos": [
+"Consultoria paga por PJ privada: CSRF 4,65%"
+],
+"link": "https://normas.receita.fazenda.gov.br/sijut2consulta/link.action?idAto=15406",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "in2055",
+"tipo": "Instrução Normativa",
+"numero": "IN RFB 2.055/2021",
+"ano": 2021,
+"data": "2021-12-06",
+"orgao": "Receita Federal",
+"ementa": "Restituição, compensação e ressarcimento de tributos federais (PER/DCOMP), inclusive retenções previdenciárias e CSRF.",
+"temas": [
+"compensação",
+"retenção"
+],
+"tributos": [
+"INSS",
+"IRPJ",
+"CSLL",
+"PIS",
+"COFINS"
+],
+"aplica": [
+"servico",
+"mercadoria"
+],
+"vigencia": "Em vigor",
+"casos": [
+"Prestador compensa INSS retido com contribuição patronal na DCTFWeb"
+],
+"link": "https://normas.receita.fazenda.gov.br/sijut2consulta/link.action?idAto=122077",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "in2289",
+"tipo": "Instrução Normativa",
+"numero": "IN RFB 2.289/2025",
+"ano": 2025,
+"data": "2025-10-01",
+"orgao": "Receita Federal",
+"ementa": "Altera a IN 2.110/2022: consolida as hipóteses de dispensa da retenção previdenciária (art. 114), inclusive empreitada total contratada por órgão público.",
+"temas": [
+"INSS",
+"retenção",
+"dispensa"
+],
+"tributos": [
+"INSS"
+],
+"aplica": [
+"servico"
+],
+"vigencia": "Em vigor",
+"casos": [
+"Obra pública por empreitada total: não reter"
+],
+"link": "https://normas.receita.fazenda.gov.br/sijut2consulta/consulta.action",
+"status": "vigente",
+"conferir": true,
+"esfera": "federal"
+},
+{
+"id": "lc160",
+"tipo": "Lei Complementar",
+"numero": "LC 160/2017",
+"ano": 2017,
+"data": "2017-08-07",
+"orgao": "Congresso Nacional",
+"ementa": "Convalidação de benefícios fiscais de ICMS concedidos sem CONFAZ (guerra fiscal); subvenções para investimento.",
+"temas": [
+"ICMS",
+"benefício fiscal"
+],
+"tributos": [
+"ICMS",
+"IRPJ"
+],
+"aplica": [
+"mercadoria"
+],
+"vigencia": "Em vigor",
+"casos": [
+"Tratamento dos benefícios estaduais no IRPJ (ver Lei 14.789)"
+],
+"link": "https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp160.htm",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "lc190",
+"tipo": "Lei Complementar",
+"numero": "LC 190/2022",
+"ano": 2022,
+"data": "2022-01-04",
+"orgao": "Congresso Nacional",
+"ementa": "DIFAL do ICMS nas vendas interestaduais a consumidor final não contribuinte.",
+"temas": [
+"ICMS",
+"DIFAL",
+"mercadoria"
+],
+"tributos": [
+"ICMS"
+],
+"aplica": [
+"mercadoria"
+],
+"vigencia": "Em vigor",
+"casos": [
+"E-commerce vendendo a pessoa física de outro Estado"
+],
+"link": "https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp190.htm",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "lc192",
+"tipo": "Lei Complementar",
+"numero": "LC 192/2022",
+"ano": 2022,
+"data": "2022-03-11",
+"orgao": "Congresso Nacional",
+"ementa": "ICMS monofásico sobre combustíveis.",
+"temas": [
+"ICMS",
+"monofásico"
+],
+"tributos": [
+"ICMS"
+],
+"aplica": [
+"mercadoria"
+],
+"vigencia": "Em vigor",
+"casos": [
+"Revenda de combustíveis (presunção 1,6% no presumido)"
+],
+"link": "https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp192.htm",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "lc194",
+"tipo": "Lei Complementar",
+"numero": "LC 194/2022",
+"ano": 2022,
+"data": "2022-06-23",
+"orgao": "Congresso Nacional",
+"ementa": "Combustíveis, energia, comunicação e transporte coletivo como bens essenciais: ICMS limitado à alíquota geral.",
+"temas": [
+"ICMS",
+"essencialidade"
+],
+"tributos": [
+"ICMS"
+],
+"aplica": [
+"mercadoria",
+"servico"
+],
+"vigencia": "Em vigor",
+"casos": [],
+"link": "https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp194.htm",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "ec132",
+"tipo": "Emenda Constitucional",
+"numero": "EC 132/2023",
+"ano": 2023,
+"data": "2023-12-20",
+"orgao": "Congresso Nacional",
+"ementa": "Reforma Tributária do consumo: cria o IBS (art. 156-A), a CBS (art. 195, V) e o Imposto Seletivo (art. 153, VIII); extingue PIS, COFINS, ICMS, ISS e reduz IPI; regimes específicos e favorecidos; transição 2026–2033 (ADCT, arts. 124 a 133); Comitê Gestor do IBS.",
+"temas": [
+"reforma tributária",
+"IBS",
+"CBS",
+"transição"
+],
+"tributos": [
+"IBS",
+"CBS",
+"IS",
+"ISS",
+"ICMS",
+"PIS",
+"COFINS",
+"IPI"
+],
+"aplica": [
+"servico",
+"mercadoria",
+"importacao",
+"exportacao"
+],
+"vigencia": "Em vigor; efeitos escalonados",
+"transicao": "2026 teste (0,9% + 0,1%); 2027 CBS cheia e fim de PIS/COFINS; 2029–2032 IBS sobe e ICMS/ISS caem 10% ao ano; 2033 fim de ICMS e ISS",
+"casos": [
+"Imunidade das exportações; crédito amplo; regime de bens imóveis com redução"
+],
+"link": "https://www.planalto.gov.br/ccivil_03/constituicao/emendas/emc/emc132.htm",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "l14754",
+"tipo": "Lei",
+"numero": "Lei 14.754/2023",
+"ano": 2023,
+"data": "2023-12-12",
+"orgao": "Congresso Nacional",
+"ementa": "Tributação de aplicações financeiras, offshores e trusts de pessoas físicas; fundos exclusivos.",
+"temas": [
+"IRPF",
+"investimentos"
+],
+"tributos": [
+"IRRF"
+],
+"aplica": [],
+"vigencia": "Em vigor",
+"casos": [
+"Sócio com investimentos no exterior"
+],
+"link": "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2023/lei/l14754.htm",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "l14789",
+"tipo": "Lei",
+"numero": "Lei 14.789/2023",
+"ano": 2023,
+"data": "2023-12-29",
+"orgao": "Congresso Nacional",
+"ementa": "Subvenções para investimento: fim da exclusão da base do IRPJ/CSLL/PIS/COFINS; crédito fiscal de 25% sobre subvenções de ICMS habilitadas; JCP.",
+"temas": [
+"benefício fiscal",
+"ICMS",
+"lucro real"
+],
+"tributos": [
+"IRPJ",
+"CSLL",
+"PIS",
+"COFINS"
+],
+"aplica": [
+"mercadoria"
+],
+"vigencia": "Em vigor desde 01/01/2024",
+"casos": [
+"Indústria com benefício estadual de ICMS"
+],
+"link": "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2023/lei/l14789.htm",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "l14973",
+"tipo": "Lei",
+"numero": "Lei 14.973/2024",
+"ano": 2024,
+"data": "2024-09-16",
+"orgao": "Congresso Nacional",
+"ementa": "Transição da desoneração da folha (CPRB) entre 2025 e 2027, com reoneração gradual e fim em 2028; atualização de bens no IR.",
+"temas": [
+"INSS",
+"CPRB",
+"desoneração"
+],
+"tributos": [
+"INSS"
+],
+"aplica": [
+"servico",
+"mercadoria"
+],
+"vigencia": "Em vigor",
+"transicao": "2025: CPRB 80% + 5% folha; 2026: 60% + 10%; 2027: 40% + 15%; 2028: 20% folha integral",
+"casos": [
+"Construtora na CPRB"
+],
+"link": "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2024/lei/l14973.htm",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "lc214",
+"tipo": "Lei Complementar",
+"numero": "LC 214/2025",
+"ano": 2025,
+"data": "2025-01-16",
+"orgao": "Congresso Nacional",
+"ementa": "Institui o IBS, a CBS e o Imposto Seletivo: incidência e local da operação (arts. 1º a 11), imunidade das exportações (art. 8º), não cumulatividade e crédito (arts. 28 e 47), Simples Nacional e opção pelo regime regular (art. 41), importação de bens e serviços, regimes específicos (combustíveis, financeiro, planos de saúde, bens imóveis arts. 251 a 270 com redução de 50% e crédito de material limitado ao débito para não contribuinte, art. 255, §5º), reduções de 30% para profissões intelectuais (art. 127) e 60% (saúde, educação, alimentos), documentos fiscais, transição 2026 (arts. 343 a 348: CBS 0,9% e IBS 0,1% compensáveis com PIS/COFINS).",
+"temas": [
+"reforma tributária",
+"IBS",
+"CBS",
+"crédito",
+"exportação",
+"importação",
+"construção civil",
+"Simples Nacional"
+],
+"tributos": [
+"IBS",
+"CBS",
+"IS"
+],
+"aplica": [
+"servico",
+"mercadoria",
+"importacao",
+"exportacao"
+],
+"vigencia": "Em vigor; efeitos desde 01/01/2026",
+"transicao": "2026 teste; 2027 CBS cheia; 2029–2033 IBS gradual",
+"casos": [
+"cClassTrib 200046 (bens imóveis, 50%) e 200052 (profissões intelectuais, 30%)",
+"Optante do Simples transferindo crédito integral ao cliente (art. 41)",
+"Exportação imune com manutenção de crédito"
+],
+"link": "https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp214.htm",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "l15079",
+"tipo": "Lei",
+"numero": "Lei 15.079/2024",
+"ano": 2024,
+"data": "2024-12-27",
+"orgao": "Congresso Nacional",
+"ementa": "Adicional da CSLL (tributação mínima global de 15%) para grupos multinacionais com receita acima de € 750 milhões (Pilar 2 da OCDE).",
+"temas": [
+"CSLL",
+"multinacionais"
+],
+"tributos": [
+"CSLL"
+],
+"aplica": [],
+"vigencia": "Em vigor desde 2025",
+"casos": [
+"Só grandes grupos multinacionais"
+],
+"link": "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2024/lei/l15079.htm",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "lc224",
+"tipo": "Lei Complementar",
+"numero": "LC 224/2025",
+"ano": 2025,
+"data": "2025-10-01",
+"orgao": "Congresso Nacional",
+"ementa": "Altera a LC 123 e a LC 214: ajustes no Simples Nacional e na transição do IBS/CBS, regras de benefícios fiscais.",
+"temas": [
+"Simples Nacional",
+"reforma tributária"
+],
+"tributos": [
+"IBS",
+"CBS"
+],
+"aplica": [
+"servico",
+"mercadoria"
+],
+"vigencia": "Em vigor",
+"casos": [],
+"link": "https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp224.htm",
+"status": "vigente",
+"conferir": true,
+"esfera": "federal"
+},
+{
+"id": "lc227",
+"tipo": "Lei Complementar",
+"numero": "LC 227/2026",
+"ano": 2026,
+"data": "2026-01-01",
+"orgao": "Congresso Nacional",
+"ementa": "Segunda lei da reforma tributária (PLP 108/2024): Comitê Gestor do IBS, processo administrativo do IBS, ITCMD, distribuição de receita, ajustes na LC 214.",
+"temas": [
+"reforma tributária",
+"IBS",
+"Comitê Gestor"
+],
+"tributos": [
+"IBS",
+"CBS"
+],
+"aplica": [
+"servico",
+"mercadoria"
+],
+"vigencia": "Em vigor",
+"casos": [
+"Contencioso e fiscalização do IBS"
+],
+"link": "https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp227.htm",
+"status": "vigente",
+"conferir": true,
+"esfera": "federal"
+},
+{
+"id": "l15270",
+"tipo": "Lei",
+"numero": "Lei 15.270/2025",
+"ano": 2025,
+"data": "2025-11-26",
+"orgao": "Congresso Nacional",
+"ementa": "Isenção do IRPF até R$ 5 mil mensais e redução até R$ 7.350; tributação mínima de altas rendas (10% acima de R$ 1,2 milhão/ano) e IRRF de 10% sobre lucros e dividendos acima de R$ 50 mil mensais a partir de 2026.",
+"temas": [
+"IRPF",
+"dividendos",
+"altas rendas"
+],
+"tributos": [
+"IRRF"
+],
+"aplica": [
+"servico",
+"mercadoria"
+],
+"vigencia": "Efeitos a partir de 01/01/2026",
+"casos": [
+"Distribuição de lucros do sócio: retenção de 10% acima de R$ 50 mil/mês"
+],
+"link": "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2025/lei/l15270.htm",
+"status": "vigente",
+"conferir": true,
+"esfera": "federal"
+},
+{
+"id": "d70235",
+"tipo": "Decreto",
+"numero": "Decreto 70.235/1972",
+"ano": 1972,
+"data": "1972-03-06",
+"orgao": "Presidência da República",
+"ementa": "Processo administrativo fiscal federal: auto de infração, impugnação, recurso ao CARF, prazos.",
+"temas": [
+"processo administrativo",
+"defesa"
+],
+"tributos": [
+"todos"
+],
+"aplica": [
+"servico",
+"mercadoria"
+],
+"vigencia": "Em vigor",
+"casos": [
+"Defesa contra glosa de dedução de material/retenção"
+],
+"link": "https://www.planalto.gov.br/ccivil_03/decreto/d70235.htm",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "cgsn140",
+"tipo": "Resolução",
+"numero": "Resolução CGSN 140/2018",
+"ano": 2018,
+"data": "2018-05-22",
+"orgao": "Comitê Gestor do Simples Nacional",
+"ementa": "Regulamento do Simples Nacional: opção, cálculo, segregação de receitas, Fator R, retenção de ISS, exportação, ocupações do MEI, obrigações acessórias (PGDAS-D, DEFIS).",
+"temas": [
+"Simples Nacional",
+"MEI",
+"Fator R",
+"obrigações acessórias"
+],
+"tributos": [
+"IRPJ",
+"CSLL",
+"PIS",
+"COFINS",
+"CPP",
+"ICMS",
+"ISS"
+],
+"aplica": [
+"servico",
+"mercadoria",
+"exportacao"
+],
+"vigencia": "Em vigor com alterações",
+"casos": [
+"Lista de atividades por anexo (Anexos VI e VII da Resolução)",
+"Regras de retenção de ISS no Simples (art. 27)"
+],
+"link": "https://normas.receita.fazenda.gov.br/sijut2consulta/link.action?idAto=92278",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "nfse",
+"tipo": "Ato administrativo",
+"numero": "Portal Nacional da NFS-e — leiaute DPS/NFS-e e Anexos",
+"ano": 2024,
+"data": "2024-01-01",
+"orgao": "Comitê Gestor da NFS-e / Receita Federal",
+"ementa": "Padrão nacional da Nota Fiscal de Serviço eletrônica: campos da DPS, cTribNac, cNBS, cIndOp, CST e cClassTrib do IBS/CBS (Anexo VIII), tabela NBS (Anexo VI), indicadores de operação (Anexo VII).",
+"temas": [
+"NFS-e",
+"obrigações acessórias",
+"códigos",
+"IBS",
+"CBS"
+],
+"tributos": [
+"ISS",
+"IBS",
+"CBS"
+],
+"aplica": [
+"servico",
+"exportacao",
+"importacao"
+],
+"vigencia": "Em vigor; grupo IBS/CBS obrigatório conforme cronograma do leiaute",
+"casos": [
+"Códigos obrigatórios da nota de serviço"
+],
+"link": "https://www.gov.br/nfse/pt-br",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "stj217",
+"tipo": "Jurisprudência",
+"numero": "STJ — Tema repetitivo 217",
+"ano": 2009,
+"data": "2009-10-22",
+"orgao": "Superior Tribunal de Justiça",
+"ementa": "Serviços hospitalares: presunção de 8% (IRPJ) e 12% (CSLL) aplica-se à atividade, independentemente da estrutura (exige sociedade empresária e normas da ANVISA).",
+"temas": [
+"lucro presumido",
+"saúde",
+"jurisprudência"
+],
+"tributos": [
+"IRPJ",
+"CSLL"
+],
+"aplica": [
+"servico"
+],
+"vigencia": "Precedente vinculante (art. 927 CPC)",
+"casos": [
+"Clínica de diagnóstico no presumido"
+],
+"link": "https://processo.stj.jus.br/repetitivos/temas_repetitivos/pesquisa.jsp?novaConsulta=true&tipo_pesquisa=T&cod_tema_inicial=217&cod_tema_final=217",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "stj779",
+"tipo": "Jurisprudência",
+"numero": "STJ — Tema repetitivo 779",
+"ano": 2018,
+"data": "2018-02-22",
+"orgao": "Superior Tribunal de Justiça",
+"ementa": "Conceito de insumo para crédito de PIS/COFINS: critérios de essencialidade ou relevância para a atividade.",
+"temas": [
+"PIS",
+"COFINS",
+"crédito",
+"jurisprudência"
+],
+"tributos": [
+"PIS",
+"COFINS"
+],
+"aplica": [
+"servico",
+"mercadoria"
+],
+"vigencia": "Precedente vinculante",
+"casos": [
+"Crédito sobre EPI, locação de equipamentos, subempreitada no Lucro Real"
+],
+"link": "https://processo.stj.jus.br/repetitivos/temas_repetitivos/pesquisa.jsp?novaConsulta=true&tipo_pesquisa=T&cod_tema_inicial=779&cod_tema_final=779",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "stj1240",
+"tipo": "Jurisprudência",
+"numero": "STJ — Tema repetitivo 1.240",
+"ano": 2024,
+"data": "2024-05-08",
+"orgao": "Superior Tribunal de Justiça",
+"ementa": "O ISS compõe a base de cálculo do IRPJ e da CSLL no Lucro Presumido.",
+"temas": [
+"lucro presumido",
+"ISS",
+"jurisprudência"
+],
+"tributos": [
+"IRPJ",
+"CSLL",
+"ISS"
+],
+"aplica": [
+"servico"
+],
+"vigencia": "Precedente vinculante",
+"casos": [
+"Não excluir o ISS da receita bruta presumida"
+],
+"link": "https://processo.stj.jus.br/repetitivos/temas_repetitivos/pesquisa.jsp?novaConsulta=true&tipo_pesquisa=T&cod_tema_inicial=1240&cod_tema_final=1240",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "stf603191",
+"tipo": "Jurisprudência",
+"numero": "STF — RE 603.191 (Tema 302)",
+"ano": 2011,
+"data": "2011-08-01",
+"orgao": "Supremo Tribunal Federal",
+"ementa": "Constitucionalidade da retenção de 11% de INSS na cessão de mão de obra (Lei 8.212, art. 31).",
+"temas": [
+"INSS",
+"retenção",
+"jurisprudência"
+],
+"tributos": [
+"INSS"
+],
+"aplica": [
+"servico"
+],
+"vigencia": "Repercussão geral",
+"casos": [],
+"link": "https://portal.stf.jus.br/jurisprudenciaRepercussao/verAndamentoProcesso.asp?incidente=2638699&numeroProcesso=603191&classeProcesso=RE&numeroTema=302",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "stfadi4735",
+"tipo": "Jurisprudência",
+"numero": "STF — ADI 4.735 e RE 759.244 (Tema 674)",
+"ano": 2020,
+"data": "2020-02-12",
+"orgao": "Supremo Tribunal Federal",
+"ementa": "Imunidade das contribuições sociais sobre receitas de exportação alcança as exportações indiretas (via trading/comercial exportadora).",
+"temas": [
+"exportação",
+"imunidade",
+"jurisprudência"
+],
+"tributos": [
+"PIS",
+"COFINS",
+"INSS"
+],
+"aplica": [
+"exportacao",
+"mercadoria"
+],
+"vigencia": "Repercussão geral",
+"casos": [
+"Venda a comercial exportadora com fim específico de exportação"
+],
+"link": "https://portal.stf.jus.br/processos/detalhe.asp?incidente=4205781",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "stf574706",
+"tipo": "Jurisprudência",
+"numero": "STF — RE 574.706 (Tema 69)",
+"ano": 2017,
+"data": "2017-03-15",
+"orgao": "Supremo Tribunal Federal",
+"ementa": "O ICMS não compõe a base de cálculo do PIS e da COFINS ('tese do século'); modulação a partir de 15/03/2017.",
+"temas": [
+"PIS",
+"COFINS",
+"ICMS",
+"jurisprudência"
+],
+"tributos": [
+"PIS",
+"COFINS",
+"ICMS"
+],
+"aplica": [
+"mercadoria"
+],
+"vigencia": "Repercussão geral",
+"casos": [
+"Indústria e comércio: exclusão do ICMS destacado"
+],
+"link": "https://portal.stf.jus.br/jurisprudenciaRepercussao/verAndamentoProcesso.asp?incidente=2585258&numeroProcesso=574706&classeProcesso=RE&numeroTema=69",
+"status": "vigente",
+"esfera": "federal"
+},
+{
+"id": "mczgiss",
+"tipo": "Ato administrativo",
+"numero": "Lista de Atividades do ISS de Maceió/AL (GISS Online)",
+"ano": 2018,
+"data": "2018-01-01",
+"orgao": "Prefeitura de Maceió — Secretaria Municipal de Economia",
+"ementa": "Lista oficial de códigos de atividade do ISS de Maceió (906 códigos vinculados aos subitens da LC 116/2003) com alíquota vigente por código: 2% (informática e alguns serviços incentivados), 2,5% (construção civil 7.02/7.05, concretagem), 3% (saúde), 4% e 5% (regra geral). Usada pelo emissor de NFS-e do município. Vigência de cada código a partir de 01/01/2018, com inclusões em 01/01/2026.",
+"temas": [
+"ISS",
+"alíquota municipal",
+"código de serviço municipal",
+"NFS-e",
+"Maceió"
+],
+"tributos": [
+"ISS"
+],
+"aplica": [
+"servico"
+],
+"vigencia": "Vigente (lista extraída em 09/10/2026)",
+"casos": [
+"Construção civil 7.02 e 7.05 em Maceió: 2,5%",
+"Programação e processamento de dados 1.02/1.03: 2%",
+"Serviços médicos 4.01 a 4.03: 3%",
+"Demais serviços: 5%"
+],
+"link": "https://maceio.giss.com.br/",
+"status": "vigente",
+"conferir": true,
+"esfera": "municipal"
+},
+{
+"id": "spriss",
+"esfera": "municipal",
+"tipo": "Decreto",
+"numero": "Decreto 53.151/2012 (RISS — São Paulo/SP)",
+"ano": 2012,
+"data": "2012-05-17",
+"orgao": "Prefeitura de São Paulo — Secretaria Municipal da Fazenda",
+"ementa": "Regulamento do ISS do Município de São Paulo: fato gerador e lista de serviços (art. 1º), local da prestação (arts. 3º e 4º), responsabilidade e retenção pelo tomador (arts. 5º a 15), base de cálculo (art. 16), alíquotas (art. 18: 2% para saúde, educação, vigilância, limpeza de imóveis, licenciamento de software, cessão de mão de obra, perícias etc.; 3% suporte técnico em informática 1.07; 5% demais), sociedades uniprofissionais com ISS fixo por profissional (art. 19), cadastro (CCM/CPOM), NFS-e, declarações, infrações, isenções e incentivos. Alterado por decretos posteriores (56.378/2015, 62.601/2023 e outros).",
+"temas": [
+"ISS",
+"alíquota municipal",
+"retenção de ISS",
+"sociedade uniprofissional",
+"NFS-e",
+"São Paulo"
+],
+"tributos": [
+"ISS"
+],
+"aplica": [
+"servico",
+"importacao"
+],
+"vigencia": "Vigente desde 17/05/2012 (revogou o Decreto 50.896/2009); conferir alterações posteriores",
+"casos": [
+"Alíquotas por subitem (art. 18): 2%, 3% e 5%",
+"Sociedade uniprofissional: ISS fixo de R$ 1.221,28/mês por profissional (art. 19)",
+"Retenção pelo tomador em São Paulo (art. 10)",
+"CPOM: prestador de fora de SP sem cadastro sofre retenção"
+],
+"link": "https://legislacao.prefeitura.sp.gov.br/leis/decreto-53151-de-17-de-maio-de-2012",
+"status": "vigente",
+"conferir": true,
+"conferido": "PDF do Catálogo de Legislação Municipal recebido em 09/10/2026"
+},
+{
+"id": "spin08",
+"esfera": "municipal",
+"tipo": "Instrução Normativa",
+"numero": "IN SF/SUREM 08/2011 — Anexo 1 (tabela de códigos de serviço de São Paulo)",
+"ano": 2011,
+"data": "2011-07-18",
+"orgao": "Prefeitura de São Paulo — Secretaria Municipal da Fazenda / SUREM",
+"ementa": "Tabela de códigos de serviço, cálculo, livro, declaração e documentos fiscais do ISS de São Paulo: 405 códigos agrupados em 19 grupos (construção civil, manutenção de imóveis, técnico-científico, transporte, saúde, educação, financeiros, agenciamento, turismo, instalação, limpeza, guarda e locação, diversões, higiene pessoal, diversos), cada um com item da Lei 13.701/2003, natureza do prestador (PJ ou autônomo), alíquota (2%, 2,5%, 3%, 5% ou isento), base de cálculo, período de apuração, vencimento (dia 10 do mês seguinte) e documento fiscal (NFS-e). Atualizada até a IN SF/SUREM 03/2026.",
+"temas": [
+"ISS",
+"código de serviço municipal",
+"NFS-e",
+"São Paulo",
+"alíquota municipal"
+],
+"tributos": [
+"ISS"
+],
+"aplica": [
+"servico"
+],
+"vigencia": "Vigente (consolidação até 27/03/2026)",
+"casos": [
+"Código 01023 (7.02 obras de construção civil) a 5%",
+"Código 02917 (1.07 suporte técnico) a 3%",
+"Códigos de saúde e ensino a 2%",
+"Códigos 'Habite-se' exclusivos para regularização de obra"
+],
+"link": "https://legislacao.prefeitura.sp.gov.br/leis/instrucao-normativa-secretaria-municipal-da-fazenda-sf-surem-8-de-18-de-julho-de-2011",
+"status": "vigente",
+"conferir": true,
+"conferido": "PDF do Anexo 1 recebido em 09/10/2026"
+}
+]
+}

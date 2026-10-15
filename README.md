@@ -1,0 +1,88 @@
+# Vyson Auditor
+
+**A team of AI agents that audits Brazilian invoices, answers SAP Ariba sourcing events and prepares public-tender paperwork, citing the law for every decision.**
+
+Live demo: **https://tatianabot-dashboard.vercel.app/fiscal/auditor**
+(click "Usar notas de exemplo" → "Auditar" and open "Como os agentes trabalharam" to watch the agents plan and act)
+
+Built by a Brazilian accountant and court accounting expert to solve a daily problem: every company in Brazil receives hundreds of invoices a month from 5,570 municipalities, each with its own service-tax (ISS) rates and codes. Errors become fines, and checking them by hand takes hours.
+
+## What it does
+
+| Workflow | Input | What the agents do | Output |
+|---|---|---|---|
+| **Invoice audit** | NFS-e (XML, PDF, Word) or NF-e/DANFE (XML), or a .zip with hundreds of them | Read the invoice, check tax code, municipal rate, tax amount, withholdings, supplier CNPJ, binding court precedents | Decision (approve / review / return to supplier), findings with legal source, e-mail to the supplier |
+| **SAP Ariba event** | RFQ/RFP exported from Ariba (Excel, PDF, Word) | Read the items, split goods from services, price each item with the taxes of the bidder's regime, compute buyer withholdings | Priced response sheet ready to upload, net amount to receive |
+| **Public tender** | Tender notice (PDF) | Extract requirements and risks, generate the 7 declarations required by Law 14.133/2021 and the commercial proposal, then validate the signed documents | Word documents + checklist of what is missing, expired or inconsistent |
+
+## Multi-agent architecture
+
+```mermaid
+flowchart LR
+  U[File upload] --> C{Coordinator<br/>Gemini · function calling}
+  C -->|1| E[Extractor<br/>XML · PDF · DOCX · XLSX]
+  C -->|2| ISS[ISS auditor<br/>LC 116 + municipal tables]
+  C -->|2| ICMS[ICMS auditor<br/>CFOP · interstate rate · DIFAL]
+  C -->|3| CNPJ[CNPJ agent<br/>Federal Revenue registry]
+  C -->|4| J[Case-law agent<br/>STF/STJ binding precedents + LexML]
+  C -->|5| L[Legal agent<br/>85 official norms]
+  C -->|6| M[Communicator<br/>supplier e-mail + opinion]
+  E & ISS & ICMS & CNPJ & J & L & M --> S[(Shared session state)]
+  S --> R[Decision + trace shown to the user]
+```
+
+- **Coordinator (Gemini).** Plans the order of the tools with function calling, reads every tool result and decides the next step. If a tool fails (for example, the CNPJ registry is down), it re-plans and continues. It writes the final opinion using only tool results, with sources in brackets.
+- **Deterministic tools for the facts.** Tax rules run as code over official data, so numbers are reproducible and auditable; the model decides *what to do*, not *what the tax rate is*.
+- **Fallback planner.** Without a model key the same plan runs from rules, so the demo never stops.
+- **Full trace.** The UI shows every step ("Coordinator decided to call: ISS auditor → 1 error → Legal agent found LC 116/2003 → Communicator drafted the e-mail").
+
+## Official data used
+
+| File | Content | Source |
+|---|---|---|
+| `data/data.json` | National service list (LC 116/2003), NFS-e national codes, IBS/CBS classification | Receita Federal, Annex VIII/VI |
+| `data/maceio.json` | 906 municipal ISS codes and rates of Maceió | GISS Online, Maceió City Hall |
+| `data/saopaulo.json` | 410 ISS codes of São Paulo | IN SF/SUREM 08/2011 |
+| `data/leis.json` | 85 federal norms and court rulings with official links | Planalto, Receita Federal |
+| `data/jurisprudencia.json` | 10 binding precedents (STF/STJ) that change how the law applies | STF, STJ |
+
+## Run it
+
+```bash
+pip install -r requirements.txt
+cp .env.example .env        # put your Google AI Studio key in LLM_API_KEY
+export $(grep -v '^#' .env | xargs)
+python web/servidor.py      # http://localhost:8793 → "Usar notas de exemplo" → "Auditar"
+python tests/test_agentes.py
+```
+
+The coordinator works with any OpenAI-compatible endpoint that supports function calling:
+
+| Model | `LLM_BASE_URL` | `LLM_MODEL` |
+|---|---|---|
+| **Gemini** (default) | `https://generativelanguage.googleapis.com/v1beta/openai` | `gemini-3-flash-preview` |
+| AMD Token Factory | `https://developer.amd.com.cn/radeon/api/v1` | `Gemma-4-31B-IT` |
+| Self-hosted vLLM | `http://your-server:8000/v1` | your model |
+
+`api/auditor.py` is the same service as a serverless function (Vercel), reading `GEMINI_API_KEY`, `GEMINI_MODEL` and `GEMINI_BASE_URL`.
+
+## Repository layout
+
+```
+agentes/   coordinator and the 7 agents (agentes.py), tax rules (auditar.py, nfe.py),
+           readers (extrair.py), SAP Ariba agent (ariba.py), tender agent (edital.py)
+data/      official tables and norms
+web/       local web app (servidor.py + ui.html) and fictitious sample files
+api/       serverless version
+tests/     end-to-end tests with the sample files
+```
+
+## Privacy
+
+Files are processed in memory and not stored. Sample files are fictitious. API keys live only in environment variables.
+
+## Disclaimer
+
+Reference tool for tax professionals. It does not replace the analysis of an accountant; always check the cited norm.
+
+License: MIT · Vyson Fyconsult

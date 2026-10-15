@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<NFSe xmlns="http://www.sped.fazenda.gov.br/nfse"><infNFSe><nNFSe>1201</nNFSe><cLocIncid>2704302</cLocIncid>
+<DPS><infDPS><dhEmi>2026-10-10T09:00:00-03:00</dhEmi><prest><CNPJ>11222333000181</CNPJ><xNome>Empresa Exemplo de Software Ltda</xNome></prest>
+<serv><locPrest><cLocPrestacao>2704302</cLocPrestacao></locPrest><cServ><cTribNac>010201</cTribNac><cTribMun>0102010</cTribMun><xDescServ>Desenvolvimento de módulo de sistema</xDescServ></cServ></serv>
+<valores><vServPrest><vServ>10000.00</vServ></vServPrest><trib><tribMun><tribISSQN>1</tribISSQN><pAliq>2.00</pAliq><tpRetISSQN>1</tpRetISSQN></tribMun></trib></valores></infDPS></DPS>
+<valores><vISSQN>200.00</vISSQN><vLiq>10000.00</vLiq></valores></infNFSe></NFSe>

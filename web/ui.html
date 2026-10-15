@@ -1,0 +1,107 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Auditor de Notas · Vyson</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Source+Serif+4:opsz,wght@8..60,700&display=swap" rel="stylesheet">
+<style>
+:root{--az:#0b4a5a;--lar:#c25e00;--fundo:#f4f6f8;--txt:#14262d;--mut:#4f6068;--lin:#dfe5ea}
+*{box-sizing:border-box}body{margin:0;font:15px/1.6 Inter,system-ui,sans-serif;background:var(--fundo);color:var(--txt)}
+header{background:var(--az);color:#fff;padding:18px 24px}header h1{margin:0;font:700 24px "Source Serif 4",Georgia,serif}header p{margin:2px 0 0;color:#c5d8de;font-size:13px}
+main{max-width:1000px;margin:20px auto;padding:0 16px;display:grid;gap:16px}
+.card{background:#fff;border:1px solid var(--lin);border-radius:14px;padding:20px}
+#drop{border:2px dashed #9fb5bd;border-radius:12px;padding:30px;text-align:center;color:var(--mut);cursor:pointer}#drop.on{background:#eef6f8;border-color:var(--az)}
+#drop b{color:var(--az)}button{background:var(--az);color:#fff;border:0;border-radius:8px;padding:11px 20px;font:600 15px Inter,sans-serif;cursor:pointer}button:disabled{opacity:.5}
+.lista{font-size:13px;color:var(--mut);margin:10px 0}.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+h2{font:700 19px "Source Serif 4",Georgia,serif;color:var(--az);margin:0 0 6px}
+.dec{display:inline-block;padding:4px 12px;border-radius:99px;font-weight:700;font-size:13px}.aprovar{background:#e3f6ec;color:#11734a}.revisar{background:#fff4dc;color:#8a5a00}.devolver{background:#fde8e8;color:#a32020}
+table{width:100%;border-collapse:collapse;font-size:14px;margin-top:10px}th{text-align:left;font-size:12px;color:var(--mut);border-bottom:2px solid var(--lin);padding:7px 8px}td{padding:8px;border-bottom:1px solid #eef1f4;vertical-align:top;text-align:left}td:nth-child(3){text-align:justify}
+.n{display:inline-block;min-width:62px;text-align:center;border-radius:6px;font-size:11px;font-weight:700;padding:2px 6px}.erro{background:#fde8e8;color:#a32020}.alerta{background:#fff4dc;color:#8a5a00}.info{background:#e8f1fb;color:#1d5a9a}.ok{background:#e3f6ec;color:#11734a}
+.kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px;margin:10px 0}.kv div{border:1px solid var(--lin);border-radius:8px;padding:6px 10px}.kv small{display:block;color:var(--mut);font-size:11px}
+.par{background:#f7fafb;border-left:4px solid var(--az);padding:10px 14px;border-radius:6px;white-space:pre-wrap;text-align:justify}.meta{font-size:12px;color:var(--mut)}.trace{margin-top:12px;border:1px solid var(--lin);border-radius:10px;padding:10px 14px;background:#fbfcfd}.trace ol{margin:8px 0 0;padding-left:22px}.trace li{margin:4px 0}.ag{display:inline-block;background:var(--az);color:#fff;border-radius:6px;padding:0 8px;font-size:12px;font-weight:700;margin-right:6px}
+</style></head><body>
+<header><h1>Vyson Auditor · equipe de agentes fiscais</h1><p>Envie a nota em XML, PDF ou Word. Um coordenador planeja e chama 7 agentes: extrator, auditor de ISS, auditor de ICMS, CNPJ, jurisprudência (STF/STJ), jurídico e comunicador. Eles decidem: aprovar, revisar ou devolver.</p></header>
+<main>
+<section class="card">
+ <div id="drop"><b>Clique ou arraste as notas aqui</b><br>NFS-e (XML, PDF, Word) e NF-e/DANFE de material (XML) · também aceita pasta .zip</div>
+ <input type="file" id="f" multiple accept=".xml,.pdf,.docx,.zip" hidden>
+ <div class="lista" id="lista"></div>
+ <div class="row"><button id="go" disabled>Auditar</button><button id="ex" style="background:#fff;color:var(--az);border:1px solid var(--az)">Usar notas de exemplo</button><span class="meta" id="st"></span></div>
+</section>
+<div id="out"></div>
+<section class="card" id="ariba">
+ <h2>Agente do SAP Ariba: responder um evento de compra</h2>
+ <p class="meta" style="font-size:14px;text-align:justify">No Ariba, abra o evento (RFQ/RFP), clique em <b>Download Content</b> (ou exporte em PDF) e envie aqui. O agente lê os itens, separa mercadoria e serviço, calcula o preço com os tributos do seu regime, mostra as retenções do comprador e devolve a planilha preenchida para conferir e lançar no Ariba.</p>
+ <div class="row"><input type="file" id="af" accept=".xlsx,.pdf,.docx"><select id="areg"><option value="presumido">Lucro Presumido</option><option value="real">Lucro Real</option><option value="simples">Simples Nacional</option></select>
+ <label>Margem (%) <input id="amg" type="number" value="15" style="width:70px"></label><button id="ago">Preparar resposta</button><button id="aex" style="background:#fff;color:var(--az);border:1px solid var(--az)">Usar evento de exemplo</button></div>
+ <div id="aout"></div>
+</section>
+<section class="card" id="edital">
+ <h2>Agente de edital: analisar, gerar os modelos e validar a documentação</h2>
+ <p class="meta" style="font-size:14px;text-align:justify">1) Envie o edital: o agente lê as exigências de habilitação e os riscos. 2) Preencha os dados da empresa e baixe as declarações da Lei 14.133/2021 e a proposta comercial em Word. 3) Depois de assinar e juntar as certidões, envie tudo: o agente confere se está completo, se o CNPJ e o número do edital batem, se há campos em branco e se alguma certidão venceu.</p>
+ <div class="row"><input type="file" id="ef" accept=".pdf,.docx,.txt"><button id="eex" style="background:#fff;color:var(--az);border:1px solid var(--az)">Usar edital de exemplo</button><button id="ego2">Analisar edital</button></div>
+ <div class="kv" id="emp"></div>
+ <div id="eres"></div>
+ <h2 style="margin-top:14px;font-size:16px">Validar os documentos preenchidos</h2>
+ <div class="row"><input type="file" id="vf" multiple accept=".pdf,.docx,.txt"><button id="vgo">Validar com o edital</button></div>
+ <div id="vres"></div>
+</section>
+</main>
+<script>
+const $=id=>document.getElementById(id);let arqs=[];
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const brl=v=>v==null?"—":"R$ "+Number(v).toLocaleString("pt-BR",{minimumFractionDigits:2});
+const lista=()=>{$("lista").textContent=arqs.map(a=>a.nome).join(" · ");$("go").disabled=!arqs.length};
+const ler=async fs=>{for(const f of fs){const b=new Uint8Array(await f.arrayBuffer());let s="";for(let i=0;i<b.length;i+=8192)s+=String.fromCharCode(...b.subarray(i,i+8192));arqs.push({nome:f.name,b64:btoa(s)})}lista()};
+$("drop").onclick=()=>$("f").click();$("f").onchange=e=>ler(e.target.files);
+["dragover","dragleave","drop"].forEach(t=>$("drop").addEventListener(t,e=>{e.preventDefault();$("drop").classList.toggle("on",t==="dragover");if(t==="drop")ler(e.dataTransfer.files)}));
+$("ex").onclick=async()=>{arqs=[];for(const n of ["nota_ok.xml","nota_erro.xml","nota_obra.pdf","nota_sp.docx"]){const r=await fetch("exemplos/"+n);if(r.ok){const f=new File([await r.blob()],n);await ler([f])}}};
+$("go").onclick=async()=>{$("go").disabled=true;$("st").textContent="Auditando…";
+ const r=await(await fetch("/api/auditar",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(arqs)})).json();
+ $("st").textContent="";$("go").disabled=false;
+ const cnt=r.reduce((c,x)=>(c[x.decisao]=(c[x.decisao]||0)+1,c),{});
+ const resumo=`<section class="card"><h2>Resumo da auditoria · ${r.length} nota(s)</h2><table><tr><th>Decisão</th><th style="text-align:right">Notas</th></tr>${["aprovar","revisar","devolver ao fornecedor"].map(k=>`<tr><td><span class="dec ${k.split(" ")[0]}">${k.toUpperCase()}</span></td><td style="text-align:right;font-weight:700">${cnt[k]||0}</td></tr>`).join("")}</table>
+ <table><tr><th>Nota</th><th>Tipo</th><th>Emitente</th><th style="text-align:right">Valor</th><th>Decisão</th></tr>${r.map((x,i)=>`<tr><td><a href="#n${i}">${esc(x.nota.numero||x.arquivo)}</a></td><td>${esc(x.tipo||"")}</td><td>${esc(x.nota.prestador_cnpj||"")}</td><td style="text-align:right">${brl(x.nota.valor_servicos)}</td><td><span class="dec ${x.decisao.split(" ")[0]}">${esc(x.decisao)}</span></td></tr>`).join("")}</table></section>`;
+ $("out").innerHTML=resumo+r.map((x,i)=>{const n=x.nota,dc=x.decisao.split(" ")[0];return `<section class="card" id="n${i}"><h2>${esc(x.arquivo)} <span class="dec ${dc}">${esc(x.decisao.toUpperCase())}</span></h2>
+ <div class="meta">${esc(x.tipo||"")} · lido como ${esc(n.origem)} · ${x.erros} erro(s) · ${x.alertas} alerta(s) · município ${esc(x.municipio||"não identificado")}</div>
+ <div class="kv">${[["Nota",n.numero],["Prestador",n.prestador_cnpj],["Item LC 116",n.item_lc116],["Valor dos serviços",brl(n.valor_servicos)],["Alíquota ISS",n.aliquota_iss!=null?n.aliquota_iss+"%":"—"],["Valor ISS",brl(n.valor_iss)]].map(([a,b])=>`<div><small>${a}</small><b>${esc(b||"—")}</b></div>`).join("")}</div>
+ <table><tr><th>Resultado</th><th>Campo</th><th>Achado</th><th>Fonte</th></tr>${x.achados.map(a=>`<tr><td><span class="n ${a.nivel}">${a.nivel.toUpperCase()}</span></td><td><b>${esc(a.campo)}</b></td><td>${esc(a.msg)}</td><td class="meta">${esc(a.fonte)}</td></tr>`).join("")}</table>
+ <details class="trace" open><summary><b>Como os agentes trabalharam</b> (${x.passos.length} passos · ${x.modo==="ia"?"plano decidido pela IA "+esc(x.modelo||""):"planejador de regras"})</summary><ol>${x.passos.map(p=>`<li><span class="ag">${esc(p.agente)}</span> ${esc(p.acao)}${p.detalhe?`<br><small>${esc(p.detalhe)}</small>`:""}</li>`).join("")}</ol></details>
+ ${x.fundamentos&&x.fundamentos.length?`<h2 style="margin-top:14px;font-size:16px">Fundamento legal (agente jurídico)</h2><table><tr><th>Achado</th><th>Norma</th></tr>${x.fundamentos.map(f=>`<tr><td>${esc(f.tema)}</td><td>${f.link?`<a href="${esc(f.link)}" target="_blank" rel="noopener">${esc(f.norma)}</a>`:esc(f.norma)}</td></tr>`).join("")}</table>`:""}
+ ${x.jurisprudencia&&x.jurisprudencia.length?`<h2 style="margin-top:14px;font-size:16px">Jurisprudência vinculante × lei (agente de jurisprudência)</h2>${x.jurisprudencia.map(j=>`<div class="par" style="border-left-color:#8a5ad6;margin-bottom:8px"><b>${esc(j.tribunal)} · ${esc(j.numero)}</b> <small>(${esc(j.tipo)})</small><br><b>Tese:</b> ${esc(j.tese)}<br><b>O que a lei diz:</b> ${esc(j.lei)}<br><b>Conflito, e o que vale:</b> ${esc(j.conflito)}<br><small>${esc(j.efeito)} · <a href="${esc(j.link)}" target="_blank" rel="noopener">ver a decisão</a></small></div>`).join("")}`:""}
+ ${x.email?`<h2 style="margin-top:14px;font-size:16px">E-mail ao fornecedor (agente comunicador)</h2><div class="par">${esc(x.email)}</div><button onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText);this.textContent='Copiado ✓'" style="margin-top:8px">Copiar e-mail</button>`:""}
+ <h2 style="margin-top:14px;font-size:16px">Parecer do agente</h2><div class="par">${esc(x.parecer)}</div>
+ <p class="meta">${x.modo==="ia"?`Plano e parecer gerados por ${esc(x.modelo)}`:"Plano e parecer pelas regras (modelo desligado)"}${x.aviso_llm?" · "+esc(x.aviso_llm):""}</p></section>`}).join("")};
+
+let AR=null;const b64=async f=>{const b=new Uint8Array(await f.arrayBuffer());let s="";for(let i=0;i<b.length;i+=8192)s+=String.fromCharCode(...b.subarray(i,i+8192));return btoa(s)};
+$("aex").onclick=async()=>{const r=await fetch("exemplos/evento_ariba.xlsx");AR={nome:"evento_ariba.xlsx",b64:await b64(new File([await r.blob()],"e"))};ariba()};
+$("af").onchange=async e=>{const f=e.target.files[0];if(f){AR={nome:f.name,b64:await b64(f)}}};
+$("ago").onclick=()=>AR&&ariba();
+async function ariba(custos){const corpo={...AR,regime:$("areg").value,margem:$("amg").value,custos:custos||{}};
+ const r=await(await fetch("/api/ariba",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(corpo)})).json();const c=r.cabecalho;
+ $("aout").innerHTML=`<div class="kv">${[["Evento",c.evento],["Título",c.titulo],["Comprador",c.comprador],["Prazo",c.prazo],["Moeda",c.moeda]].map(([a,b])=>`<div><small>${a}</small><b>${esc(b||"—")}</b></div>`).join("")}</div>
+ <details class="trace" open><summary><b>Como o agente trabalhou</b></summary><ol>${r.passos.map(p=>`<li>${esc(p)}</li>`).join("")}</ol></details>
+ <table><tr><th>Item</th><th>Natureza</th><th>Qtd</th><th>Custo unit. (R$)</th><th>Tributos no preço</th><th>Preço unit.</th><th>Total</th><th>Retenções</th></tr>${r.itens.map((l,i)=>`<tr><td>${esc(l.descricao)}</td><td>${l.natureza==="servico"?"Serviço":"Mercadoria"}</td><td>${l.quantidade} ${esc(l.unidade)}</td><td><input data-i="${i}" class="acu" type="number" value="${l.custo_unit??""}" style="width:100px"></td><td>${Object.entries(l.tributos).map(([k,v])=>`${k} ${v}%`).join(", ")}</td><td><b>${brl(l.preco_unit)}</b></td><td>${brl(l.valor)}</td><td class="meta">${Object.keys(l.retencoes).join(", ")||"—"}</td></tr>`).join("")}</table>
+ <div class="kv"><div><small>Total da proposta</small><b>${brl(r.total)}</b></div>${Object.entries(r.retencoes).map(([k,v])=>`<div><small>Retenção: ${esc(k)}</small><b>− ${brl(v)}</b></div>`).join("")}<div><small>Líquido a receber</small><b>${brl(r.liquido)}</b></div></div>
+ <div class="row"><button id="arec">Recalcular com os custos digitados</button><a id="axl" download="resposta_${esc(c.evento||"ariba")}.xlsx" href="data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,${r.planilha_b64}"><button type="button">Baixar planilha de resposta</button></a></div>
+ <h2 style="margin-top:14px;font-size:16px">Antes de enviar no Ariba, confira</h2><ul>${r.conferir.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>
+ <p class="meta">Retenções entre empresas: CSRF 4,65% (Lei 10.833/2003, art. 30), IRRF 1,5% para serviços profissionais e 1% para limpeza, conservação e mão de obra (RIR/2018, arts. 714 e 716), INSS 11% na cessão de mão de obra (Lei 8.212/1991, art. 31). Optante do Simples não sofre CSRF nem IRRF.</p>`;
+ $("arec").onclick=()=>{const cs={};document.querySelectorAll(".acu").forEach(x=>cs[x.dataset.i]=x.value);ariba(cs)}}
+
+const EMP=[["razao","Razão social"],["cnpj","CNPJ"],["endereco","Endereço"],["representante","Representante legal"],["cargo","Cargo"],["cidade","Cidade"]];
+$("emp").innerHTML=EMP.map(([k,l])=>`<div><small>${l}</small><input id="emp_${k}" style="width:100%;border:0;font:600 15px Inter;padding:2px 0" placeholder="${l}"></div>`).join("")+`<div><small>Microempresa ou EPP?</small><label><input id="emp_me" type="checkbox"> Sim</label></div>`;
+const empresa=()=>Object.fromEntries(EMP.map(([k])=>[k,$("emp_"+k).value]).concat([["me",$("emp_me").checked]]));
+let ED=null;
+$("ef").onchange=async e=>{const f=e.target.files[0];if(f)ED={nome:f.name,b64:await b64(f)}};
+$("eex").onclick=async()=>{const r=await fetch("exemplos/edital_exemplo.pdf");ED={nome:"edital_exemplo.pdf",b64:await b64(new File([await r.blob()],"e"))};analisaEdital()};
+$("ego2").onclick=()=>ED&&analisaEdital();
+async function analisaEdital(){const r=await(await fetch("/api/edital",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({...ED,empresa:empresa()})})).json();const c=r.cabecalho;
+ $("eres").innerHTML=`<div class="kv">${[["Edital",c.numero],["Modalidade",c.modalidade],["Órgão",c.orgao],["Sessão",c.sessao],["Valor estimado",c.valor?"R$ "+c.valor:null],["Critério",c.criterio]].map(([a,b])=>`<div><small>${a}</small><b>${esc(b||"—")}</b></div>`).join("")}</div>
+ <p><b>Objeto:</b> ${esc(c.objeto||"—")}</p>
+ <details class="trace" open><summary><b>Como o agente trabalhou</b></summary><ol>${r.passos.map(p=>`<li>${esc(p)}</li>`).join("")}</ol></details>
+ <table><tr><th>Exigência de habilitação</th><th>Página</th><th>Trecho do edital</th></tr>${r.exigencias.map(x=>`<tr><td><b>${esc(x.exigencia)}</b></td><td>${x.paginas.join(", ")}</td><td class="meta">${esc(x.trecho)}</td></tr>`).join("")}</table>
+ ${r.riscos.length?`<h2 style="margin-top:14px;font-size:16px">Pontos de atenção</h2><ul>${r.riscos.map(x=>`<li><b>${esc(x.risco)}:</b> ${esc(x.nota)}</li>`).join("")}</ul>`:""}
+ <a download="documentos_edital_${esc((c.numero||"").replace(/\W/g,"_"))}.docx" href="data:application/vnd.openxmlformats-officedocument.wordprocessingml.document;base64,${r.docx_b64}"><button type="button">Baixar declarações e proposta (Word)</button></a>
+ <p class="meta">Preencha os dados da empresa acima antes de baixar para os modelos saírem completos. Revise e assine antes de enviar.</p>`}
+$("vgo").onclick=async()=>{if(!ED)return alert("Envie primeiro o edital.");const docs=[];for(const f of $("vf").files)docs.push({nome:f.name,b64:await b64(f)});
+ const r=await(await fetch("/api/validar",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({...ED,empresa:empresa(),docs})})).json(),v=r.validacao;
+ $("vres").innerHTML=`<p><b>${esc(v.resumo)}</b></p><table><tr><th>Arquivo</th><th>Reconhecido como</th><th>Situação</th></tr>${v.documentos.map(d=>`<tr><td>${esc(d.arquivo)}</td><td>${esc(d.tipo)}</td><td>${d.status==="ok"?'<span class="n ok">OK</span>':`<span class="n erro">CORRIGIR</span> ${d.problemas.map(esc).join("; ")}`}</td></tr>`).join("")}</table>
+ ${v.faltando.length?`<h2 style="margin-top:14px;font-size:16px">Ainda falta enviar</h2><ul>${v.faltando.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`:'<p class="n ok">Documentação completa</p>'}`};
+</script></body></html>
