@@ -1,11 +1,11 @@
 {
  "conjunto_sha256": "c41f6b421f949c6b5bfbc11117c3ea73a17e644335febe9ffe198c2371f40a5a",
  "notas": 260,
- "erros_plantados": 200,
- "erros_pegos": 153,
- "taxa_pegos": 0.765,
- "notas_corretas": 60,
- "corretas_sem_erro_falso": 60,
+ "erros_plantados": 250,
+ "erros_pegos": 203,
+ "taxa_pegos": 0.812,
+ "notas_corretas": 70,
+ "corretas_sem_erro_falso": 70,
  "por_tipo": {
   "ok": "50/50",
   "aliquota": "50/50",
@@ -16,6 +16,16 @@
   "uae_trn": "10/10",
   "uae_linha": "10/10",
   "uae_endereco": "10/10",
-  "uae_categoria": "10/10"
- }
+  "uae_categoria": "10/10",
+  "licit_ok": "10/10",
+  "licit_vencido": "10/10",
+  "licit_vence_antes_da_sessao": "10/10",
+  "licit_cnpj_errado": "10/10",
+  "licit_sem_numero_do_edital": "10/10",
+  "licit_faltando": "10/10"
+ },
+ "tempo_notas_s": 0.9,
+ "tempo_por_nota_s": 0.004,
+ "tempo_60_pacotes_licitacao_s": 0.0,
+ "tempo_por_pacote_s": 0.001
 }

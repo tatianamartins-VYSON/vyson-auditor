@@ -65,7 +65,39 @@ ESPERADO = {"item_trocado": "tem", "aliquota": "Alíquota", "valor_iss": "Valor 
             "uae_endereco": "Endereço", "uae_categoria": "Alíquota VAT"}
 
 
+def licitacao():
+    """Pacotes de habilitação fictícios: um correto e cinco tipos de erro que inabilitam a proposta."""
+    import edital as E
+    an = {"cabecalho": {"numero": "12/2026", "sessao": "20/11/2026 09h00"}, "exigencias": []}
+    cn = "11.444.777/0001-61"
+    emp = {"cnpj": cn, "me": False}
+
+    def pacote():
+        d = {f"decl{i}": f"A empresa CNPJ {cn} {txt} Pregão Eletrônico nº 12/2026." for i, (_, txt) in enumerate(E.DECL)}
+        d["proposta"] = f"PROPOSTA COMERCIAL CNPJ {cn} Pregão nº 12/2026 valor global da proposta R$ 10.000,00"
+        d["cnd"] = f"Certidão relativa aos tributos federais e à dívida ativa da União CNPJ {cn} válida até 30/12/2026"
+        d["fgts"] = f"Certificado de Regularidade do FGTS - CRF CNPJ {cn} Validade: 15/12/2026"
+        d["cndt"] = f"Certidão Negativa de Débitos Trabalhistas CNPJ {cn} válida até 10/04/2027"
+        return d
+    mut = {"ok": lambda d: d,
+           "vencido": lambda d: {**d, "cnd": d["cnd"].replace("30/12/2026", "01/09/2026")},
+           "vence_antes_da_sessao": lambda d: {**d, "fgts": d["fgts"].replace("15/12/2026", "10/11/2026")},
+           "cnpj_errado": lambda d: {**d, "cndt": d["cndt"].replace(cn, "22.333.444/0001-55")},
+           "sem_numero_do_edital": lambda d: {**d, "decl0": d["decl0"].replace(" Pregão Eletrônico nº 12/2026.", "")},
+           "faltando": lambda d: {k: v for k, v in d.items() if k != "fgts"}}
+    res = {}
+    for tipo, f in mut.items():
+        for _ in range(10):
+            docs = [(f"{k}.txt", v.encode()) for k, v in f(pacote()).items()]
+            r = E.validar(an, docs, emp)
+            certo = r["pronto_para_participar"] if tipo == "ok" else not r["pronto_para_participar"]
+            x = res.setdefault("licit_" + tipo, [0, 0]); x[0] += certo; x[1] += 1
+    return res
+
+
 def main():
+    import time
+    t0 = time.time()
     cs = casos()
     h = hashlib.sha256(b"".join(c[3] for c in cs)).hexdigest()
     res = {}
@@ -78,12 +110,18 @@ def main():
             ok = r["decisao"] != "aprovar" and any(ESPERADO[tipo] in a["campo"].lower() or ESPERADO[tipo] in a["campo"] for a in r["achados"] if a["nivel"] in ("erro", "alerta"))
         d = res.setdefault(tipo, [0, 0])
         d[0] += ok; d[1] += 1
+    t_notas = time.time() - t0
+    t1 = time.time()
+    res.update(licitacao())
+    t_licit = time.time() - t1
     planted = {k: v for k, v in res.items() if not k.endswith("ok")}
     pegos, total = sum(v[0] for v in planted.values()), sum(v[1] for v in planted.values())
     limpos = [v for k, v in res.items() if k.endswith("ok")]
     sem_falso, n_ok = sum(v[0] for v in limpos), sum(v[1] for v in limpos)
     rel = {"conjunto_sha256": h, "notas": len(cs), "erros_plantados": total, "erros_pegos": pegos, "taxa_pegos": round(pegos / total, 4),
-           "notas_corretas": n_ok, "corretas_sem_erro_falso": sem_falso, "por_tipo": {k: f"{v[0]}/{v[1]}" for k, v in res.items()}}
+           "notas_corretas": n_ok, "corretas_sem_erro_falso": sem_falso, "por_tipo": {k: f"{v[0]}/{v[1]}" for k, v in res.items()},
+           "tempo_notas_s": round(t_notas, 1), "tempo_por_nota_s": round(t_notas / len(cs), 3),
+           "tempo_60_pacotes_licitacao_s": round(t_licit, 1), "tempo_por_pacote_s": round(t_licit / 60, 3)}
     (AQUI / "relatorio.json").write_text(json.dumps(rel, ensure_ascii=False, indent=1), encoding="utf-8")
     print(json.dumps(rel, ensure_ascii=False, indent=1))
 
