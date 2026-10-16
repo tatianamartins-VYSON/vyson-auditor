@@ -7,6 +7,11 @@ Live demo: **https://tatianabot-dashboard.vercel.app/fiscal/auditor**
 
 Built by a Brazilian accountant and court accounting expert to solve a daily problem: every company in Brazil receives hundreds of invoices a month from 5,570 municipalities, each with its own service-tax (ISS) rates and codes. Errors become fines, and checking them by hand takes hours.
 
+## Real-world validation
+
+- **2 public tenders won and awarded in Brazil (R$ 2.36 million in contracts)** using the method behind the tender agent: reading the notice, building the qualification package with the legal basis of each document, checking every certificate's validity on the session date, and pricing with the right taxes. Client and agency names are not published (professional secrecy).
+- Real service invoices from Maceió audited end to end on the live site, with Gemma 4 on AMD coordinating six agents (client data not published).
+
 ## What it does
 
 | Workflow | Input | What the agents do | Output |
