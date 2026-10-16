@@ -57,6 +57,14 @@ Adding a country is a new auditor module plus its official table; the coordinato
 | `data/leis.json` | 85 federal norms and court rulings with official links | Planalto, Receita Federal |
 | `data/jurisprudencia.json` | 10 binding precedents (STF/STJ) that change how the law applies | STF, STJ |
 
+## What runs on AMD
+
+| Part | Where it runs | Role |
+|---|---|---|
+| Coordinator model (open model, Gemma 4 / Qwen) | vLLM on ROCm, AMD Instinct GPU (AMD Developer Cloud) or AMD Token Factory | Plans which agents to call, reads their results, writes the cited opinion |
+| Tax rules, official tables, citation of the law | CPU (deterministic code) | Rates, codes and amounts are computed, never generated |
+| Evolus document extractor + human-review workflow | Evolus platform (REST API), connected to our AMD-hosted model | Reads scanned invoices; hands cases with errors to a person, with CNPJ/CPF/names masked and a SHA-256 receipt |
+
 ## Run it
 
 ```bash
