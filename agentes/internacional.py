@@ -16,7 +16,7 @@ from datetime import date
 
 UBL = {"cbc": "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2",
        "cac": "urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"}
-CAT_UAE = {"S": (5.0, "Taxa padrão de 5%"), "Z": (0.0, "Alíquota zero (exportação, transporte internacional, saúde e educação qualificadas)"),
+CAT_UAE = {"AE": (None, "Inversão do contribuinte (reverse charge): o VAT é declarado pelo comprador"), "S": (5.0, "Taxa padrão de 5%"), "Z": (0.0, "Alíquota zero (exportação, transporte internacional, saúde e educação qualificadas)"),
            "E": (None, "Isento (serviços financeiros, imóvel residencial, transporte local)"), "O": (None, "Fora do escopo do VAT")}
 UF_IN = {"27": "Maharashtra", "29": "Karnataka", "07": "Delhi", "09": "Uttar Pradesh", "33": "Tamil Nadu", "24": "Gujarat", "36": "Telangana", "19": "West Bengal"}
 GST_NOVAS = {0, 0.25, 3, 5, 18, 40}
@@ -91,7 +91,46 @@ def auditar_uae(texto):
     for campo, caminho in (("Número da fatura", "cbc:ID"), ("Data", "cbc:IssueDate"), ("Nome do fornecedor", "cac:AccountingSupplierParty/cac:Party/cac:PartyLegalEntity/cbc:RegistrationName")):
         if not g(caminho):
             add("erro", campo, f"{campo} ausente: campo obrigatório da fatura fiscal.", "Executive Regulation, art. 59")
-    add("info", "e-Invoicing", "Os Emirados estão implantando a fatura eletrônica obrigatória no padrão PINT AE, em fases a partir de 2026; confira o cronograma da sua empresa.", "Ministério das Finanças dos Emirados")
+    # ---- campos obrigatórios da fatura fiscal (Executive Regulation, art. 59(1)) ----
+    if not re.search(r"tax invoice", texto, re.I) and any(st.findtext("cac:TaxCategory/cbc:ID", namespaces=UBL) == "S" for st in r.findall("cac:TaxTotal/cac:TaxSubtotal", UBL)):
+        add("alerta", "Título", "A fatura com VAT de 5% deve trazer a expressão 'Tax Invoice' em destaque.", "Executive Regulation, art. 59(1)(a)")
+    if r.find("cac:AccountingSupplierParty/cac:Party/cac:PostalAddress", UBL) is None:
+        add("erro", "Endereço do fornecedor", "Fatura sem o endereço do fornecedor: campo obrigatório da fatura fiscal.", "Executive Regulation, art. 59(1)(b)")
+    linhas = r.findall("cac:InvoiceLine", UBL)
+    if not linhas:
+        add("alerta", "Itens", "Fatura sem linhas de itens: a fatura fiscal deve descrever cada bem ou serviço, com quantidade, preço unitário e VAT.", "Executive Regulation, art. 59(1)(f)-(j)")
+    for k, ln in enumerate(linhas, 1):
+        nome = ln.findtext("cac:Item/cbc:Name", namespaces=UBL)
+        qtd, preco, val = (_r(ln.findtext(x, namespaces=UBL)) for x in ("cbc:InvoicedQuantity", "cac:Price/cbc:PriceAmount", "cbc:LineExtensionAmount"))
+        if not nome:
+            add("erro", f"Item {k}", "Item sem descrição do bem ou serviço.", "Executive Regulation, art. 59(1)(f)")
+        if qtd and preco and abs(qtd * preco - val) > 0.05:
+            add("erro", f"Item {k}", f"Valor da linha AED {val:,.2f} difere de {qtd:g} × AED {preco:,.2f} = AED {qtd * preco:,.2f}.", "Executive Regulation, art. 59(1)(g)-(i)")
+    # ---- prazo de emissão: 14 dias da data do fornecimento ----
+    entrega = g("cac:Delivery/cbc:ActualDeliveryDate")
+    try:
+        if entrega and g("cbc:IssueDate") and (date.fromisoformat(g("cbc:IssueDate")) - date.fromisoformat(entrega)).days > 14:
+            add("alerta", "Prazo", f"Fatura emitida mais de 14 dias depois do fornecimento ({entrega}).", "Federal Decree-Law 8/2017, art. 67")
+    except ValueError:
+        pass
+    # ---- fatura simplificada e reverse charge ----
+    if (payable or 0) and payable <= 10000 and not trn_c:
+        add("info", "Fatura simplificada", "Total até AED 10.000 e cliente sem TRN: pode ser emitida fatura simplificada (simplified tax invoice).", "Executive Regulation, art. 60")
+    if any(st.findtext("cac:TaxCategory/cbc:ID", namespaces=UBL) == "AE" for st in r.findall("cac:TaxTotal/cac:TaxSubtotal", UBL)) and not re.search(r"reverse charge", texto, re.I):
+        add("erro", "Reverse charge", "Categoria AE sem a menção 'reverse charge' na fatura: o comprador precisa saber que declara o VAT.", "Executive Regulation, art. 59(1)(l); Decree-Law 8/2017, art. 48")
+    # ---- e-invoicing PINT AE ----
+    cust = (g("cbc:CustomizationID") or "").lower()
+    if "pint" in cust and "ae" in cust:
+        add("ok", "PINT AE", "Fatura no padrão PINT AE (Peppol) do e-invoicing dos Emirados.", "Ministério das Finanças dos Emirados (e-Invoicing)")
+        if g("cbc:InvoiceTypeCode") not in ("380", "381", "386", "389", "480"):
+            add("alerta", "PINT AE", f"Tipo de documento '{g('cbc:InvoiceTypeCode')}' fora dos usuais (380 fatura, 381 nota de crédito).", "PINT AE (Peppol International)")
+        if r.find("cac:AccountingSupplierParty/cac:Party/cbc:EndpointID", UBL) is None or r.find("cac:AccountingCustomerParty/cac:Party/cbc:EndpointID", UBL) is None:
+            add("alerta", "PINT AE", "Falta o EndpointID (endereço Peppol) do fornecedor ou do cliente: sem ele a fatura não trafega pela rede do e-invoicing.", "PINT AE (Peppol International)")
+    else:
+        add("alerta", "PINT AE", "Fatura fora do padrão PINT AE: com o e-invoicing obrigatório, ela precisará ser emitida pelo provedor credenciado (ASP) nesse padrão.", "Ministério das Finanças dos Emirados (e-Invoicing)")
+    add("info", "e-Invoicing", "Cronograma divulgado pelo Ministério das Finanças: piloto a partir de 1º/07/2026; empresas com receita a partir de AED 50 milhões, obrigatório a partir de 1º/01/2027; demais empresas, a partir de 1º/07/2027. Confirme a fase da sua empresa no site do MoF.", "Decisão Ministerial 244/2025 (Emirados)")
+    if any(f["nivel"] == "erro" for f in F):
+        add("alerta", "Multa", "Fatura fiscal emitida sem os requisitos pode gerar multa administrativa da FTA (por exemplo, AED 5.000 por fatura não emitida corretamente). Corrija antes de declarar o VAT.", "Cabinet Decision 49/2021 (multas administrativas)")
     return _fecha(F, nota, "Fatura UAE (VAT)", "Dubai, Emirados Árabes")
 
 

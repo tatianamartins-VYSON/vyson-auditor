@@ -38,6 +38,25 @@ flowchart LR
 - **Fallback planner.** Without a model key the same plan runs from rules, so the demo never stops.
 - **Full trace.** The UI shows every step ("Coordinator decided to call: ISS auditor → 1 error → Legal agent found LC 116/2003 → Communicator drafted the e-mail").
 
+## UAE (Dubai): why it matters and what the agent checks
+
+**The market.** Every VAT-registered business in the UAE must issue tax invoices that meet Executive Regulation art. 59, and e-invoicing in the PINT AE (Peppol) format is becoming mandatory: pilot from 1 July 2026, businesses with revenue of AED 50 million or more from 1 January 2027, all other businesses from 1 July 2027 (Ministerial Decision 244/2025). Invoices issued without the legal requirements can lead to FTA administrative penalties (Cabinet Decision 49/2021). Companies will need to check thousands of e-invoices before they reach the VAT return.
+
+**What the UAE auditor checks (fictitious samples in `web/exemplos/fatura_dubai_*.xml`):**
+
+| Check | Legal basis |
+|---|---|
+| Supplier and customer TRN (15 digits, starting with 100) | FTA |
+| "Tax Invoice" title, supplier address, invoice number and date | Executive Regulation, art. 59(1) |
+| Each line: description, quantity × unit price = line amount | Executive Regulation, art. 59(1)(f)-(i) |
+| VAT category (S 5%, Z zero-rated, E exempt, O out of scope, AE reverse charge) and VAT amount in AED | Decree-Law 8/2017, arts. 3, 45, 46, 48 |
+| Reverse charge must be stated on the invoice | Executive Regulation, art. 59(1)(l) |
+| Invoice issued within 14 days of supply | Decree-Law 8/2017, art. 67 |
+| Simplified tax invoice allowed up to AED 10,000 for unregistered customers | Executive Regulation, art. 60 |
+| Zero-rated supplies need export evidence | Executive Regulation, art. 30 |
+| PINT AE: customization ID, document type, Peppol endpoint IDs | PINT AE (Peppol International) |
+| Totals: tax-exclusive + VAT = tax-inclusive | — |
+
 ## Beyond Brazil
 
 | Country | What the agent checks | Legal basis |
