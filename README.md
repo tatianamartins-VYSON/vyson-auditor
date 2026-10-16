@@ -65,6 +65,13 @@ Adding a country is a new auditor module plus its official table; the coordinato
 | Tax rules, official tables, citation of the law | CPU (deterministic code) | Rates, codes and amounts are computed, never generated |
 | Evolus document extractor + human-review workflow | Evolus platform (REST API), connected to our AMD-hosted model | Reads scanned invoices; hands cases with errors to a person, with CNPJ/CPF/names masked and a SHA-256 receipt |
 
+## Related repositories
+
+| Repository | What it is |
+|---|---|
+| [vyson-auditor](https://github.com/tatianamartins-VYSON/vyson-auditor) (this one) | The agent team: invoice audit, Evolus extractor + human-review workflow, tenders, SAP Ariba |
+| [vyson-fiscalrag](https://github.com/tatianamartins-VYSON/vyson-fiscalrag) | Cited tax Q&A on AMD (vLLM/ROCm), deterministic citation gate, frozen 30-question evaluation with SHA-256, tests and CI |
+
 ## Run it
 
 ```bash
