@@ -21,6 +21,7 @@ import time
 import urllib.parse
 import urllib.request
 
+import evolus
 from auditar import auditar
 from extrair import extrair
 from nfe import auditar_nfe, eh_nfe
@@ -62,6 +63,13 @@ def ag_extrator(s: Sessao, **_):
         s.log("Extrator", "Identificou NF-e de mercadoria (XML modelo 55)")
         return {"tipo": "NF-e mercadoria", "proximo": "auditor_icms"}
     s.nota = extrair(s.nome, s.dados)
+    if not s.nota.get("valor_servicos") and evolus.ligado():  # digitalização/foto: extrator de documentos do Evolus
+        try:
+            ev = evolus.extrair(s.nome, s.dados) or {}
+            s.nota.update({k: v for k, v in ev.items() if v not in (None, "") and not s.nota.get(k)})
+            s.log("Extrator (Evolus)", "Leitor local não achou o valor; o extrator de documentos do Evolus leu a nota", ", ".join(list(ev)[:8]))
+        except Exception as e:  # noqa: BLE001
+            s.log("Extrator (Evolus)", "Indisponível; seguiu com a leitura local", type(e).__name__)
     s.nota["tipo"] = "NFS-e serviço"
     campos = {k: v for k, v in s.nota.items() if v not in (None, "", False) and not k.startswith("_")}
     s.log("Extrator", f"Leu {s.nota['origem']} de NFS-e: {len(campos)} campos", ", ".join(f"{k}={v}" for k, v in list(campos.items())[:8]))
@@ -257,6 +265,14 @@ def coordenar(nome: str, dados: bytes) -> dict:
     elif s.auditoria["decisao"] != "aprovar" and s.email is None:
         ag_comunicador(s)
     a = s.auditoria
+    humano = None
+    if a["decisao"] != "aprovar" and evolus.ligado():
+        try:
+            humano = evolus.encaminhar({"nota": s.nota, "achados": a["achados"], "decisao": a["decisao"], "erros": a["erros"], "alertas": a["alertas"]})
+            if humano:
+                s.log("Revisão humana (Evolus)", "Caso enviado ao fluxo de revisão, com CNPJ e nomes mascarados", f"{len(humano['recibo'])} dado(s) mascarado(s)")
+        except Exception as e:  # noqa: BLE001
+            s.log("Revisão humana (Evolus)", "Fluxo indisponível; o caso fica na tela para revisão", type(e).__name__)
     if not parecer:
         probs = [x for x in a["achados"] if x["nivel"] in ("erro", "alerta")]
         parecer = {"aprovar": "Nota conforme: nenhum erro ou alerta.", "revisar": "Nota com alertas: revisão humana recomendada.",
@@ -265,4 +281,5 @@ def coordenar(nome: str, dados: bytes) -> dict:
     nota = {k: v for k, v in (s.nota or {}).items() if not k.startswith("_")}
     return {"arquivo": nome, "tipo": a.get("tipo"), "nota": nota, "municipio": a.get("municipio"), "achados": a["achados"], "erros": a["erros"], "alertas": a["alertas"],
             "decisao": a["decisao"], "parecer": parecer, "email": s.email, "cnpj": s.cnpj, "fundamentos": s.fundamentos, "jurisprudencia": s.juris, "passos": s.passos,
-            "modo": modo, "modelo": os.getenv("LLM_MODEL") if modo == "ia" else None}
+            "modo": modo, "modelo": os.getenv("LLM_MODEL") if modo == "ia" else None,
+            "revisao_humana": humano}
