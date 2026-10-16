@@ -5,7 +5,7 @@
 Live demo: **https://tatianabot-dashboard.vercel.app/fiscal/auditor**
 (click "Usar notas de exemplo" → "Auditar" and open "Como os agentes trabalharam" to watch the agents plan and act)
 
-Built by Tatiana Tenório Martins: Brazilian accountant and court-appointed expert, specialist in Tax Law and Judicial Calculations, 4+ years at a Brazilian Court of Justice, Software Engineering student, to solve a daily problem: every company in Brazil receives hundreds of invoices a month from 5,570 municipalities, each with its own service-tax (ISS) rates and codes. Errors become fines, and checking them by hand takes hours.
+Built by Tatiana Tenório Martins: Brazilian accountant and court-appointed expert, specialist in Tax Law and Judicial Calculations, 4+ years at a Brazilian Court of Justice (trained the team that cleared its calculation backlog in 2025), Software Engineering student, to solve a daily problem: every company in Brazil receives hundreds of invoices a month from 5,570 municipalities, each with its own service-tax (ISS) rates and codes. Errors become fines, and checking them by hand takes hours.
 
 ## Real-world validation
 
