@@ -72,6 +72,20 @@ Adding a country is a new auditor module plus its official table; the coordinato
 | [vyson-auditor](https://github.com/tatianamartins-VYSON/vyson-auditor) (this one) | The agent team: invoice audit, Evolus extractor + human-review workflow, tenders, SAP Ariba |
 | [vyson-fiscalrag](https://github.com/tatianamartins-VYSON/vyson-fiscalrag) | Cited tax Q&A on AMD (vLLM/ROCm), deterministic citation gate, frozen 30-question evaluation with SHA-256, tests and CI |
 
+### Measured on AMD (live site, 16 Oct 2026)
+
+Coordinator **Gemma-4-31B-IT** served on AMD infrastructure (AMD Token Factory), auditing a real NFS-e from Maceió (client data not published):
+
+| What the model did | Result |
+|---|---|
+| Agents it chose to call, in order | extractor → ISS auditor → CNPJ → case law → legal → communicator (6 agents) |
+| Model calls | 4 (parallel tool calls) |
+| Latency of each call | 1.39 s · 2.16 s · 3.37 s · 3.05 s (≈10 s for the whole audit) |
+| Decision | Review: service item 17.01 vs suggested 17.02, NBS code mismatch, missing federal withholdings (IRRF 1.5%, CSRF 4.65%) |
+| Opinion | Written by the model, citing only the agents' results in brackets |
+
+The site shows every step and the time of each model call under "Como os agentes trabalharam".
+
 ## Run it
 
 ```bash
