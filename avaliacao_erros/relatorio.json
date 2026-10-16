@@ -1,0 +1,21 @@
+{
+ "conjunto_sha256": "c41f6b421f949c6b5bfbc11117c3ea73a17e644335febe9ffe198c2371f40a5a",
+ "notas": 260,
+ "erros_plantados": 200,
+ "erros_pegos": 153,
+ "taxa_pegos": 0.765,
+ "notas_corretas": 60,
+ "corretas_sem_erro_falso": 60,
+ "por_tipo": {
+  "ok": "50/50",
+  "aliquota": "50/50",
+  "valor_iss": "50/50",
+  "item_trocado": "3/50",
+  "uae_ok": "10/10",
+  "uae_vat": "10/10",
+  "uae_trn": "10/10",
+  "uae_linha": "10/10",
+  "uae_endereco": "10/10",
+  "uae_categoria": "10/10"
+ }
+}
