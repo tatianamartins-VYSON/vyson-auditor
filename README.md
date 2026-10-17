@@ -1,13 +1,23 @@
 # Vyson Calc & Negócios · Vyson Auditor
 
-**A team of AI agents that audits invoices from Brazil, Dubai (UAE VAT) and India (GST), answers SAP Ariba sourcing events and prepares public-tender paperwork, citing the law for every decision.**
+**A team of AI agents that audits invoices from Brazil, Italy (FatturaPA IVA), Dubai (UAE VAT) and India (GST), runs batch judicial calculations for court experts, answers SAP Ariba sourcing events and prepares public-tender paperwork, citing the law for every decision.**
 
 Video (4 min 28 s): **https://youtu.be/PRp9gXab_QQ** · Slides: [English](docs/Vyson_Calc_Negocios_Presentation_EN.pdf) · [Português](docs/Vyson_Calc_Negocios_Apresentacao_PT.pdf)
 
 Live demo: **https://tatianabot-dashboard.vercel.app/fiscal/auditor**
-(click "Usar notas de exemplo" → "Auditar" and open "Como os agentes trabalharam" to watch the agents plan and act)
+(click the sample-files button → "Audit" and open "Como os agentes trabalharam" to watch the agents plan and act)
 
 Built by Tatiana Tenório Martins: Brazilian accountant and court-appointed expert, specialist in Tax Law and Judicial Calculations, 4+ years at the Court of Justice of the State of Alagoas, TJAL (trained the team that cleared its calculation backlog in 2025), Software Engineering student, to solve a daily problem: every company in Brazil receives hundreds of invoices a month from 5,570 municipalities, each with its own service-tax (ISS) rates and codes. Errors become fines, and checking them by hand takes hours.
+
+## What's new (October 2026)
+
+- **Paying client:** Aurum Construtora, R$ 5,000/month with all modules. Tax savings identified: R$ 223k/year (3.7× the contract).
+- **Italy (FatturaPA) auditor:** Partita IVA check digit, live **VIES** lookup (European Commission) for intra-EU parties, IVA rates (22/10/5/4%), Natura N1–N7, reverse charge, split payment, ritenuta d'acconto, imposta di bollo, penalties (D.Lgs. 471/1997). One unified report for Brazil, Italy, UAE and India.
+- **Court expert, batch mode** (`/fiscal/perito`): upload many case files, keyword extraction (CNJ number, award, base date, index, interest, fees), exact monetary update with official indices (IPCA-E, IPCA-15, INPC, IPCA, IGP-M, SELIC, TR), critical analysis against the law, STF/STJ precedents and the **Federal Justice Calculation Manual 2026** (EC 136/2025, Law 14.905/2024), control number per case, triage by priority, court costs, personalized report (Word/PDF) and spreadsheet. The judge's final decision always prevails (CPC art. 509 §4).
+- **Evolus agents (API, verified live):** NFS-e extractor and court-case extractor called through `POST /api/v1/agents/{id}/ask`; names, CPF/CNPJ and e-mails are masked before sending.
+- **Audit report:** sampling and indicators, charts, consolidated recommendations by priority, justified text, Excel export.
+- **Security & access page** (`/fiscal/seguranca`): HTTPS, personal-data masking, keys outside the code; login, 2FA, roles and access log in the contracted version.
+- **Disclaimer on every page:** decision-support tool; every calculation, report and opinion must be validated by a qualified professional.
 
 ## Real-world validation
 
