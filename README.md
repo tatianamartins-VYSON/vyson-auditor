@@ -2,7 +2,7 @@
 
 **A team of AI agents that audits invoices from Brazil, Dubai (UAE VAT) and India (GST), answers SAP Ariba sourcing events and prepares public-tender paperwork, citing the law for every decision.**
 
-Video (4 min 28 s): **https://youtu.be/PRp9gXab_QQ**
+Video (4 min 28 s): **https://youtu.be/PRp9gXab_QQ** · Slides: [English](docs/Vyson_Calc_Negocios_Presentation_EN.pdf) · [Português](docs/Vyson_Calc_Negocios_Apresentacao_PT.pdf)
 
 Live demo: **https://tatianabot-dashboard.vercel.app/fiscal/auditor**
 (click "Usar notas de exemplo" → "Auditar" and open "Como os agentes trabalharam" to watch the agents plan and act)
