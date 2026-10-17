@@ -1,4 +1,4 @@
-# Vyson Auditor
+# Vyson Calc & Negócios · Vyson Auditor
 
 **A team of AI agents that audits invoices from Brazil, Dubai (UAE VAT) and India (GST), answers SAP Ariba sourcing events and prepares public-tender paperwork, citing the law for every decision.**
 
