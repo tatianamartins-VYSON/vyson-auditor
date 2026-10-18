@@ -36,6 +36,13 @@ class H(http.server.BaseHTTPRequestHandler):
             if f.is_file():
                 return self._envia(f.read_bytes(), "application/octet-stream")
             return self._envia(b"", "text/plain", 404)
+        if self.path.rstrip("/") == "/perito" or self.path.startswith("/perito/"):
+            nome = pathlib.Path(self.path).name if self.path.startswith("/perito/") and "." in self.path else "perito.html"
+            f = pathlib.Path(__file__).with_name("perito") / nome
+            tipos = {".html": "text/html; charset=utf-8", ".js": "text/javascript", ".json": "application/json"}
+            if f.is_file():
+                return self._envia(f.read_bytes(), tipos.get(f.suffix, "application/octet-stream"))
+            return self._envia(b"", "text/plain", 404)
         self._envia(UI, "text/html; charset=utf-8")
 
     def do_POST(self):
