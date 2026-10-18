@@ -26,23 +26,27 @@ Built by Tatiana Tenório Martins: Brazilian accountant and court-appointed expe
 
 ```mermaid
 flowchart LR
-  U[File upload] --> C{Coordinator<br/>Gemini · function calling}
+  U[File upload] --> C{Coordinator<br/>fixed agent pipeline}
   C -->|1| E[Extractor<br/>XML · PDF · DOCX · XLSX]
   C -->|2| ISS[ISS auditor<br/>LC 116 + municipal tables]
   C -->|2| ICMS[ICMS auditor<br/>CFOP · interstate rate · DIFAL]
   C -->|2| VAT[UAE VAT auditor<br/>TRN · 5% / zero / exempt]
   C -->|2| GST[India GST auditor<br/>GSTIN · CGST+SGST / IGST · GST 2.0]
+  C -->|2| IT[Italy IVA auditor<br/>FatturaPA · Partita IVA · VIES]
   C -->|3| CNPJ[CNPJ agent<br/>Federal Revenue registry]
   C -->|4| J[Case-law agent<br/>STF/STJ binding precedents + LexML]
   C -->|5| L[Legal agent<br/>85 official norms]
   C -->|6| M[Communicator<br/>supplier e-mail + opinion]
   E & ISS & ICMS & CNPJ & J & L & M --> S[(Shared session state)]
-  S --> R[Decision + trace shown to the user]
+  S --> O[Gemma 4 on AMD<br/>1 call: cited opinion]
+  O --> T{Citation lock}
+  T --> R[Decision + trace shown to the user]
 ```
 
-- **Coordinator (Gemini).** Plans the order of the tools with function calling, reads every tool result and decides the next step. If a tool fails (for example, the CNPJ registry is down), it re-plans and continues. It writes the final opinion using only tool results, with sources in brackets.
-- **Deterministic tools for the facts.** Tax rules run as code over official data, so numbers are reproducible and auditable; the model decides *what to do*, not *what the tax rate is*.
-- **Fallback planner.** Without a model key the same plan runs from rules, so the demo never stops.
+- **One model call, not a planning loop.** The specialist agents run in a fixed order as code (extract → audit → CNPJ → case law → legal → communicator), because that order never changes. The open model on AMD (Gemma-4-31B-IT via AMD Token Factory) is called **once**, at the end, to write the opinion from the agents' results. Fewer calls means lower latency and fewer points of failure.
+- **Citation lock (anti-hallucination).** Every source the model cites in brackets must exist in the agents' results; a made-up law or article number is rejected and the rules write the opinion instead (`_citacoes_ok` in `agentes/agentes.py`, tested in `tests/test_agentes.py`).
+- **Deterministic tools for the facts.** Tax rules run as code over official data, so numbers are reproducible and auditable; the model writes *the explanation*, not *the tax rate*.
+- **Graceful fallback.** Without a model key, or if the model is down, the same pipeline runs and the rules write the opinion, so the demo never stops.
 - **Full trace.** The UI shows every step ("Coordinator decided to call: ISS auditor → 1 error → Legal agent found LC 116/2003 → Communicator drafted the e-mail").
 
 ## UAE (Dubai): why it matters and what the agent checks
@@ -87,7 +91,7 @@ Adding a country is a new auditor module plus its official table; the coordinato
 
 | Part | Where it runs | Role |
 |---|---|---|
-| Coordinator model (open model, Gemma 4 / Qwen) | vLLM on ROCm, AMD Instinct GPU (AMD Developer Cloud) or AMD Token Factory | Plans which agents to call, reads their results, writes the cited opinion |
+| Opinion model (open model, Gemma 4 / Qwen) | AMD Token Factory (AMD GPU) or self-hosted vLLM on ROCm (AMD Developer Cloud) | One call per audit: writes the cited opinion from the agents' results, checked by the citation lock |
 | Tax rules, official tables, citation of the law | CPU (deterministic code) | Rates, codes and amounts are computed, never generated |
 | Evolus document extractor + human-review workflow | Evolus platform (REST API), connected to our AMD-hosted model | Reads scanned invoices; hands cases with errors to a person, with CNPJ/CPF/names masked and a SHA-256 receipt |
 
@@ -98,17 +102,18 @@ Adding a country is a new auditor module plus its official table; the coordinato
 | [vyson-auditor](https://github.com/tatianamartins-VYSON/vyson-auditor) (this one) | The agent team: invoice audit, Evolus extractor + human-review workflow, tenders, SAP Ariba |
 | [vyson-fiscalrag](https://github.com/tatianamartins-VYSON/vyson-fiscalrag) | Cited tax Q&A on AMD (vLLM/ROCm), deterministic citation gate, frozen 30-question evaluation with SHA-256, tests and CI |
 
-### Measured on AMD (live site, 16 Oct 2026)
+### Measured on AMD (live site, 17 Oct 2026)
 
-Coordinator **Gemma-4-31B-IT** served on AMD infrastructure (AMD Token Factory), auditing a real NFS-e from Maceió (client data not published):
+**Gemma-4-31B-IT** served on AMD infrastructure (AMD Token Factory):
 
-| What the model did | Result |
+| Test | Result |
 |---|---|
-| Agents it chose to call, in order | extractor → ISS auditor → CNPJ → case law → legal → communicator (6 agents) |
-| Model calls | 4 (parallel tool calls) |
-| Latency of each call | 1.39 s · 2.16 s · 3.37 s · 3.05 s (≈10 s for the whole audit) |
-| Decision | Review: service item 17.01 vs suggested 17.02, NBS code mismatch, missing federal withholdings (IRRF 1.5%, CSRF 4.65%) |
-| Opinion | Written by the model, citing only the agents' results in brackets |
+| Question "minimum ISS rate under LC 116?" (`/api/fiscal_ask`) | answer in ~12 s; search across 1,533 official sources in 0.005 s |
+| Citation lock | the model wrote "2% (art. 8º-A)" without a source in that sentence; the lock rejected it and showed only the official source (LC 157/2016, Planalto link) |
+| Invoice audit (`/api/auditor`) | agents run as code; the model is called once for the opinion |
+| Evolus agents (`/api/auditor?evolus=1&teste=1` and `&teste=processo`) | invoice extractor and court-case extractor return JSON (HTTP 200) |
+
+Earlier version (16 Oct) used a planning loop with 4 model calls (1.4 to 3.4 s each, ≈10 s); it was replaced by the single call above.
 
 The site shows every step and the time of each model call under "Como os agentes trabalharam".
 
@@ -119,10 +124,11 @@ pip install -r requirements.txt
 cp .env.example .env        # put your Google AI Studio key in LLM_API_KEY
 export $(grep -v '^#' .env | xargs)
 python web/servidor.py      # http://localhost:8793 → "Usar notas de exemplo" → "Auditar"
+                            # http://localhost:8793/perito → court expert batch ("Ver exemplo" → "Analisar em lote")
 python tests/test_agentes.py
 ```
 
-The coordinator works with any OpenAI-compatible endpoint that supports function calling:
+The opinion model works with any OpenAI-compatible endpoint:
 
 | Model | `LLM_BASE_URL` | `LLM_MODEL` |
 |---|---|---|
@@ -135,10 +141,11 @@ The coordinator works with any OpenAI-compatible endpoint that supports function
 ## Repository layout
 
 ```
-agentes/   coordinator and the 7 agents (agentes.py), tax rules (auditar.py, nfe.py),
+agentes/   coordinator and agents (agentes.py), tax rules (auditar.py, nfe.py), UAE/India/Italy
+           auditors (internacional.py), Evolus extractors (evolus.py), batch audit (lote.py),
            readers (extrair.py), SAP Ariba agent (ariba.py), tender agent (edital.py)
 data/      official tables and norms
-web/       local web app (servidor.py + ui.html) and fictitious sample files
+web/       local web app (servidor.py + ui.html), court expert batch (perito/) and fictitious sample files
 api/       serverless version
 tests/     end-to-end tests with the sample files
 ```
