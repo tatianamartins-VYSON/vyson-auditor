@@ -12,6 +12,7 @@ Built by Tatiana Tenório Martins: Brazilian accountant and court-appointed expe
 ## Real-world validation
 
 - **2 public tenders won and awarded in Brazil (R$ 2.36 million in contracts)** using the method behind the tender agent: reading the notice, building the qualification package with the legal basis of each document, checking every certificate's validity on the session date, and pricing with the right taxes. Client and agency names are not published (professional secrecy).
+- **Batch catalog for any ERP** (live: `/fiscal/cadastro-lote`; local: `/cadastro`; code: `agentes/cadastro.py`): import the goods and services catalog exported from any system (CSV or Excel, columns recognized by name), audit it against the tax reform (NCM, National Basic Food Basket under LC 214/2025, single-phase PIS/COFINS, NBS and cClassTrib from the national NFS-e tables), **price safety lock** (margin with IBS/CBS added on top, minimum price for the chosen margin), export the **same file in the same column layout** with the fixes, and **audit again after import**. One model call writes the batch opinion, checked by the citation lock.
 - Real service invoices from Maceió audited end to end on the live site, with Gemma 4 on AMD coordinating six agents (client data not published).
 
 ## What it does
