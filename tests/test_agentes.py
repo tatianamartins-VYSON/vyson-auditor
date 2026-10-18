@@ -12,7 +12,25 @@ EX = R / "web" / "exemplos"
 
 
 def test_nfse_ok():
-    assert agentes.coordenar("nota_ok.xml", (EX / "nota_ok.xml").read_bytes())["decisao"] == "aprovar"
+    # Correct 2025-style NFS-e: no errors; the only alert is the 2026 tax-reform fields (NBS, cClassTrib, IBS/CBS) now required.
+    r = agentes.coordenar("nota_ok.xml", (EX / "nota_ok.xml").read_bytes())
+    alertas = [x["campo"] for x in r["achados"] if x["nivel"] == "alerta"]
+    assert r["erros"] == 0 and alertas == ["Reforma tributária"]
+
+
+def test_italy_fatturapa():
+    ok = agentes.coordenar("fattura_italia_ok.xml", (EX / "fattura_italia_ok.xml").read_bytes())
+    bad = agentes.coordenar("fattura_italia_erro.xml", (EX / "fattura_italia_erro.xml").read_bytes())
+    assert ok["erros"] == 0 and bad["decisao"] == "devolver ao fornecedor"
+
+
+def test_single_model_call_with_citation_lock(monkeypatch):
+    monkeypatch.setenv("LLM_BASE_URL", "http://x")
+    monkeypatch.setenv("LLM_MODEL", "Gemma-4-31B-IT")
+    calls = []
+    monkeypatch.setattr(agentes, "_llm", lambda m, e=60: calls.append(1) or {"content": "Devolver [Lei 99.999/2099]."})
+    r = agentes.coordenar("nota_erro.xml", (EX / "nota_erro.xml").read_bytes())
+    assert len(calls) == 1 and r["modo"] == "regras" and "trava" in r["aviso_llm"]
 
 
 def test_nfse_wrong_rate_returned_to_supplier():
