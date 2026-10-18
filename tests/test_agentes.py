@@ -74,3 +74,13 @@ def test_batch_catalog_audit_export_and_post_import():
     assert any("Trava de preço" in a["msg"] for a in notebook["apontamentos"]) and notebook["sugestoes"]["preco_minimo"] > 3290
     after = cadastro.auditar_cadastro(out["cabecalho"], out["linhas"])
     assert after["resumo"]["ok"] > r["resumo"]["ok"]  # post-import audit
+
+
+def test_no_identifiable_data_sent_to_model(monkeypatch):
+    monkeypatch.setenv("LLM_BASE_URL", "http://x")
+    monkeypatch.setenv("LLM_MODEL", "Gemma-4-31B-IT")
+    sent = []
+    monkeypatch.setattr(agentes, "_llm", lambda m, e=60: sent.append(m[1]["content"]) or {"content": "Devolver [NOME_1] [DPR 633/1972, art. 35]."})
+    r = agentes.coordenar("fattura_italia_erro.xml", (EX / "fattura_italia_erro.xml").read_bytes())
+    assert "IT01234567898" not in sent[0] and "[NOME_1]" in sent[0]   # masked before the call
+    assert r["modo"] == "ia" and "IT01234567898" in r["parecer"]        # real value restored only on screen

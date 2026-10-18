@@ -41,7 +41,7 @@ _CPF = re.compile(r"\b\d{3}\.?\d{3}\.?\d{3}-?\d{2}\b")
 _EMAIL = re.compile(r"[\w.+-]+@[\w-]+\.[\w.]+")
 
 
-def mascarar(texto: str, nomes: list[str] | None = None) -> tuple[str, dict]:
+def mascarar(texto: str, nomes: list[str] | None = None, com_mapa: bool = False) -> tuple:
     """Troca CNPJ, CPF, e-mail e nomes por marcadores ([CNPJ_1], [NOME_1]...). Devolve o texto e o recibo:
     para cada marcador, o SHA-256 do valor original (prova o que foi trocado sem revelar o dado)."""
     recibo, cont = {}, {}
@@ -60,6 +60,8 @@ def mascarar(texto: str, nomes: list[str] | None = None) -> tuple[str, dict]:
         out = re.sub(re.escape(n), lambda m: troca("NOME", n), out, flags=re.I)
     for tipo, rx in (("CNPJ", _CNPJ), ("CPF", _CPF), ("EMAIL", _EMAIL)):
         out = rx.sub(lambda m, t=tipo: troca(t, m.group(0)), out)
+    if com_mapa:
+        return out, {k: v["sha256"] for k, v in recibo.items()}, {k: v["original"] for k, v in recibo.items()}
     return out, {k: v["sha256"] for k, v in recibo.items()}
 
 
