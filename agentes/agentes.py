@@ -313,3 +313,26 @@ def coordenar(nome: str, dados: bytes, prazo: float | None = None) -> dict:
     return {"arquivo": nome, "tipo": a.get("tipo"), "nota": nota, "municipio": a.get("municipio"), "achados": a["achados"], "erros": a["erros"], "alertas": a["alertas"],
             "decisao": a["decisao"], "parecer": parecer, "email": s.email, "cnpj": s.cnpj, "fundamentos": s.fundamentos, "jurisprudencia": s.juris, "passos": s.passos,
             "modo": modo, "modelo": os.getenv("LLM_MODEL") if modo == "ia" else None, "ficha": a.get("ficha"), "itens": a.get("itens"), "revisao_humana": humano, "aviso_llm": aviso, "tempos_llm": chamadas}
+
+
+def parecer_cadastro(r: dict) -> tuple[str, str]:
+    """Parecer do lote de cadastro: 1 chamada ao modelo na AMD, conferida pela trava de citação; sem modelo, as regras."""
+    tops = [a["msg"] for x in r["linhas"] for a in x["apontamentos"]][:25]
+    fontes = sorted({f["nome"] for x in r["linhas"] for f in x["fontes"]})
+    regras = (f"Cadastro com {r['total']} itens: {r['resumo']['ok']} conformes, {r['resumo']['revisar']} a revisar e "
+              f"{r['resumo']['corrigir']} a corrigir. Importe o arquivo corrigido no sistema e audite de novo após a implantação."
+              + (f" Fontes: {'; '.join(f'[{f}]' for f in fontes)}." if fontes else ""))
+    if not (os.getenv("LLM_BASE_URL") and os.getenv("LLM_MODEL")):
+        return regras, "regras"
+    dados = json.dumps({"resumo": r["resumo"], "total": r["total"], "apontamentos": tops, "fontes": fontes}, ensure_ascii=False)
+    try:
+        m = _llm([{"role": "system", "content": "Você é o auditor fiscal sênior. Escreva em português um parecer de até 6 linhas sobre o cadastro "
+                   "de produtos e serviços auditado: riscos para a margem e para a nota fiscal, o que corrigir primeiro e que, após importar o "
+                   "arquivo corrigido no sistema, o cadastro deve ser auditado de novo. Cite entre colchetes só as fontes recebidas."},
+                  {"role": "user", "content": dados}], 25)
+        texto = (m.get("content") or "").strip()
+        if _citacoes_ok(texto, dados):
+            return texto, "ia"
+    except Exception:  # noqa: BLE001
+        pass
+    return regras, "regras"
