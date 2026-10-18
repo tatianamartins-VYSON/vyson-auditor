@@ -125,6 +125,7 @@ cp .env.example .env        # put your Google AI Studio key in LLM_API_KEY
 export $(grep -v '^#' .env | xargs)
 python web/servidor.py      # http://localhost:8793 → "Usar notas de exemplo" → "Auditar"
                             # http://localhost:8793/perito → court expert batch ("Ver exemplo" → "Analisar em lote")
+                            # http://localhost:8793/cadastro → batch catalog ("Usar cadastro de exemplo")
 python tests/test_agentes.py
 ```
 

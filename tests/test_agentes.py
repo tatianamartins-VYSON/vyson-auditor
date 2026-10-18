@@ -58,3 +58,19 @@ if __name__ == "__main__":
         if n.startswith("test_"):
             f()
             print("OK", n)
+
+
+def test_batch_catalog_audit_export_and_post_import():
+    import csv
+    import cadastro
+    rows = list(csv.reader((EX / "cadastro_erp_exemplo.csv").read_text(encoding="utf-8").splitlines(), delimiter=";"))
+    r = cadastro.auditar_cadastro(rows[0], rows[1:])
+    assert r["total"] == 9 and r["resumo"]["corrigir"] == 5
+    out = r["arquivo"]
+    assert out["cabecalho"][:len(rows[0])] == rows[0]  # same ERP layout, new columns only at the end
+    refri = out["linhas"][1]
+    assert refri[rows[0].index("CST PIS/COFINS")] == "04"  # monophasic CST corrected in the file
+    notebook = r["linhas"][2]
+    assert any("Trava de preço" in a["msg"] for a in notebook["apontamentos"]) and notebook["sugestoes"]["preco_minimo"] > 3290
+    after = cadastro.auditar_cadastro(out["cabecalho"], out["linhas"])
+    assert after["resumo"]["ok"] > r["resumo"]["ok"]  # post-import audit

@@ -36,6 +36,8 @@ class H(http.server.BaseHTTPRequestHandler):
             if f.is_file():
                 return self._envia(f.read_bytes(), "application/octet-stream")
             return self._envia(b"", "text/plain", 404)
+        if self.path.rstrip("/") == "/cadastro":
+            return self._envia((pathlib.Path(__file__).with_name("cadastro") / "cadastro-lote.html").read_bytes(), "text/html; charset=utf-8")
         if self.path.rstrip("/") == "/perito" or self.path.startswith("/perito/"):
             nome = pathlib.Path(self.path).name if self.path.startswith("/perito/") and "." in self.path else "perito.html"
             f = pathlib.Path(__file__).with_name("perito") / nome
@@ -46,6 +48,13 @@ class H(http.server.BaseHTTPRequestHandler):
         self._envia(UI, "text/html; charset=utf-8")
 
     def do_POST(self):
+        if self.path.startswith("/api/auditor?acao=cadastro"):
+            import cadastro
+            a = json.loads(self.rfile.read(int(self.headers.get("Content-Length", 0))) or b"{}")
+            r = cadastro.auditar_cadastro([str(c) for c in a.get("cabecalho") or []], (a.get("linhas") or [])[:5000],
+                                          float(a.get("margem_min") or 0.10), float(a.get("aliq_ref") or 0.265))
+            r["parecer"], r["modo"] = agentes.parecer_cadastro(r)
+            return self._envia(json.dumps(r, ensure_ascii=False).encode(), "application/json; charset=utf-8")
         if self.path == "/api/ariba":
             n = int(self.headers.get("Content-Length", 0))
             if n > 30_000_000:

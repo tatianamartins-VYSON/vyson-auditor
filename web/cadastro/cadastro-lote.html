@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Vyson Calc &amp; Negócios · Cadastro em lote</title>
+<meta name="description" content="Importe o cadastro de produtos e serviços de qualquer sistema, audite em lote pela reforma tributária, trave o preço pela margem e exporte o arquivo corrigido no mesmo layout.">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:opsz,wght@8..60,700&display=swap" rel="stylesheet">
+<style>
+:root{--az:#0b4a5a;--lar:#c25e00;--fundo:#f4f6f8;--txt:#14262d;--mut:#4f6068;--lin:#dfe5ea;--ok:#11734a;--rev:#8a5a00;--err:#a32020}
+*{box-sizing:border-box}body{margin:0;font:17px/1.6 "Source Sans 3",Inter,system-ui,sans-serif;background:var(--fundo);color:var(--txt)}
+.top{background:#fff;border-bottom:1px solid var(--lin);padding:22px 16px}.top div{max-width:1180px;margin:0 auto}
+h1{margin:0;font:700 28px "Source Serif 4",Georgia,serif;color:var(--az)}.top p{margin:4px 0 0;color:var(--mut)}
+main{max-width:1180px;margin:18px auto;padding:0 16px;display:grid;gap:16px}.card{background:#fff;border:1px solid var(--lin);border-radius:14px;padding:22px}
+h2{font:700 21px "Source Serif 4",Georgia,serif;color:var(--az);margin:0 0 10px}
+.passo{display:flex;gap:10px;align-items:center;font-weight:700;color:var(--az);margin:14px 0 8px}.passo i{font-style:normal;display:inline-flex;width:28px;height:28px;border-radius:50%;background:var(--az);color:#fff;align-items:center;justify-content:center;font-size:14px}
+input,select{font:16px "Source Sans 3",sans-serif;padding:9px;border:2px solid #c9d3d9;border-radius:10px}
+.go{background:var(--az);color:#fff;border:0;border-radius:10px;padding:12px 22px;font:700 17px "Source Sans 3",sans-serif;cursor:pointer;margin:12px 8px 0 0}.sec{background:#fff;color:var(--az);border:2px solid var(--az)}
+.go:disabled{opacity:.6;cursor:wait}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:8px 0 14px}.kpi{border:1px solid var(--lin);border-radius:12px;padding:12px 14px}.kpi b{display:block;font-size:30px;line-height:1.1}
+table{width:100%;border-collapse:collapse;font-size:14.5px}th{text-align:left;font-size:12px;color:var(--mut);border-bottom:2px solid var(--lin);padding:7px}td{padding:7px;border-bottom:1px solid #eef1f4;vertical-align:top}
+.st{display:inline-block;border-radius:6px;padding:1px 8px;font-size:12px;font-weight:700}.ok{background:#e3f6ec;color:var(--ok)}.revisar{background:#fff4dc;color:var(--rev)}.corrigir{background:#fde8e8;color:var(--err)}
+.mut{color:var(--mut);font-size:14px}p{text-align:justify}a{color:var(--lar);font-weight:600}
+.par{background:#f1f7f9;border-left:5px solid var(--az);border-radius:10px;padding:12px 16px;white-space:pre-wrap}
+.cmp{display:flex;gap:12px;flex-wrap:wrap}.cmp div{flex:1;min-width:220px}
+@media(max-width:700px){.kpis{grid-template-columns:repeat(2,1fr)}}
+</style></head><body>
+<div class="top"><div><h1>Cadastro em lote · produtos e serviços</h1><p>Importe o cadastro exportado de qualquer sistema (ERP), audite em lote pela reforma tributária, trave o preço pela margem mínima e exporte o arquivo corrigido <b>no mesmo layout de colunas</b>, pronto para importar de volta. Depois da importação, audite de novo.</p></div></div>
+<main>
+<section class="card">
+ <div class="passo"><i>1</i>Envie o cadastro exportado do seu sistema</div>
+ <p class="mut">Excel ou CSV, do jeito que o sistema exporta. O agente reconhece as colunas pelo nome (código, descrição, NCM, item da LC 116, NBS, CST do PIS/COFINS, cClassTrib, custo e preço de venda). Os dados são lidos no seu navegador e enviados só para a auditoria; nada é guardado.</p>
+ <input type="file" id="arq" accept=".xlsx,.xls,.csv">
+ <div class="passo"><i>2</i>Trava de preço</div>
+ <label>Margem mínima (%) <input id="mg" type="number" value="10" min="0" max="90" style="width:90px"></label>
+ &nbsp; <label>IBS + CBS de referência (%) <input id="al" type="number" value="26.5" step="0.1" style="width:100px"></label>
+ <p class="mut">26,5% é a estimativa de referência usada no debate da reforma (alíquota cheia de IBS + CBS); ajuste para o seu setor. Itens da Cesta Básica Nacional entram com redução de 100% (LC 214/2025). O cálculo não considera créditos das compras, por isso é conservador.</p>
+ <button class="go" id="go" disabled>Auditar cadastro</button><button class="go sec" id="ex">Usar cadastro de exemplo</button>
+ <p class="mut" id="st"></p>
+</section>
+<section class="card" id="out" hidden></section>
+<section class="card" id="pos" hidden>
+ <h2>3. Auditoria após a implantação</h2>
+ <p>Importou o arquivo corrigido no sistema? Exporte o cadastro de novo e envie aqui: o agente audita outra vez e mostra o que ficou resolvido e o que ainda falta.</p>
+ <input type="file" id="arq2" accept=".xlsx,.xls,.csv"> <button class="go sec" id="sim">Simular com o arquivo corrigido</button>
+ <div id="cmp"></div>
+</section>
+<p class="mut">Regras sobre tabelas oficiais: LC 214/2025 (IBS/CBS, Cesta Básica Nacional), LC 116/2003 e Anexos VI e VIII da NFS-e Nacional (NBS e cClassTrib dos serviços), Lei 10.147/2000 (PIS/COFINS monofásico). O parecer do lote é escrito pelo modelo aberto na AMD em 1 chamada e conferido pela trava de citação. Ferramenta de apoio: valide com um profissional antes de importar no sistema.</p>
+</main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+const $=id=>document.getElementById(id);const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let CAB=null,LIN=null,SEP=";",NOME="cadastro",R=null,ANTES=null;
+async function lerArquivo(f){const buf=await f.arrayBuffer();let wb;
+ if(/\.csv$/i.test(f.name)){let t=new TextDecoder("utf-8").decode(buf);if(t.includes("\ufffd"))t=new TextDecoder("windows-1252").decode(buf);t=t.replace(/^\ufeff/,"");
+  const l0=t.split("\n")[0];SEP=(l0.match(/;/g)||[]).length>=(l0.match(/,/g)||[]).length?";":",";wb=XLSX.read(t,{type:"string",FS:SEP,raw:true})}
+ else wb=XLSX.read(buf,{type:"array"});const rows=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{header:1,defval:"",raw:false});
+ return {cab:rows[0].map(String),lin:rows.slice(1).filter(r=>r.some(c=>String(c).trim()))}}
+async function auditar(cab,lin){const r=await fetch("/api/auditor?acao=cadastro",{method:"POST",headers:{"Content-Type":"application/json"},
+ body:JSON.stringify({cabecalho:cab,linhas:lin,margem_min:(+$("mg").value||0)/100,aliq_ref:(+$("al").value||0)/100})});
+ if(!r.ok)throw new Error("HTTP "+r.status);return r.json()}
+function tabela(r,cab,lin){const ic=Object.entries(r.colunas_reconhecidas).map(([k,v])=>esc(v)).join(" · ");
+ return `<div class="kpis"><div class="kpi"><b>${r.total}</b>itens auditados</div><div class="kpi"><b style="color:var(--ok)">${r.resumo.ok}</b>conformes</div><div class="kpi"><b style="color:var(--rev)">${r.resumo.revisar}</b>a revisar</div><div class="kpi"><b style="color:var(--err)">${r.resumo.corrigir}</b>a corrigir</div></div>
+ <p class="mut">Colunas reconhecidas: ${ic||"nenhuma"}.</p>
+ <h2>Parecer do lote</h2><div class="par">${esc(r.parecer)}</div><p class="mut">${r.modo==="ia"?"Escrito pelo modelo aberto na AMD em 1 chamada, com as fontes conferidas pela trava de citação.":"Escrito pelas regras (modelo indisponível ou recusado pela trava de citação)."}</p>
+ <div style="overflow-x:auto"><table><tr><th>Item</th><th>Tipo</th><th>Status</th><th>Apontamentos e correção sugerida</th><th>Margem pós-reforma</th><th>Preço mínimo</th><th>Fonte oficial</th></tr>
+ ${r.linhas.map((x,i)=>`<tr><td><b>${esc(lin[i][0])}</b><br><small class="mut">${esc(lin[i][1]||"")}</small></td><td>${x.tipo}</td><td><span class="st ${x.status}">${x.status.toUpperCase()}</span></td>
+ <td>${x.apontamentos.map(a=>`<div>${a.nivel==="erro"?"●":"○"} ${esc(a.msg)}</div>`).join("")||"Conforme"}</td>
+ <td>${x.sugestoes.margem_pos_reforma!=null?x.sugestoes.margem_pos_reforma.toLocaleString("pt-BR")+"%":"—"}</td><td>${x.sugestoes.preco_minimo!=null?x.sugestoes.preco_minimo.toLocaleString("pt-BR",{style:"currency",currency:"BRL"}):"—"}</td>
+ <td>${x.fontes.map(f=>`<a href="${f.url}" target="_blank" rel="noopener">${esc(f.nome)}</a>`).join("<br>")}</td></tr>`).join("")}</table></div>`}
+function baixar(tipo){const a=R.arquivo,aoa=[a.cabecalho,...a.linhas];
+ if(tipo==="xlsx"){const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(aoa),"Cadastro corrigido");XLSX.writeFile(wb,NOME+"_corrigido.xlsx");return}
+ const q=v=>{let s=String(v??"");if(typeof v==="number"&&SEP===";")s=s.replace(".",",");return /[";\n,]/.test(s)&&s.includes(SEP)||s.includes('"')?'"'+s.replace(/"/g,'""')+'"':s};
+ const csv="﻿"+aoa.map(r=>r.map(q).join(SEP)).join("\r\n");const b=new Blob([csv],{type:"text/csv"});const l=document.createElement("a");l.href=URL.createObjectURL(b);l.download=NOME+"_corrigido.csv";l.click()}
+async function rodar(){$("go").disabled=true;$("st").textContent="Auditando "+LIN.length+" itens…";const t=Date.now();
+ try{R=await auditar(CAB,LIN);ANTES=R}catch(e){$("st").textContent="Não foi possível auditar ("+e.message+")";$("go").disabled=false;return}
+ $("st").textContent=`Auditado em ${((Date.now()-t)/1000).toFixed(1)} s.`;$("go").disabled=false;
+ $("out").hidden=false;$("out").innerHTML=`<h2>Resultado da auditoria</h2>${tabela(R,CAB,LIN)}
+ <button class="go" id="bx">Baixar cadastro corrigido (mesmo layout, CSV)</button><button class="go sec" id="bxx">Baixar em Excel</button>
+ <p class="mut">O arquivo mantém as colunas e a ordem do seu sistema; campos vazios recebem o valor sugerido (NBS, cClassTrib, CST do monofásico) e entram ao final as colunas de margem, preço mínimo, status e apontamentos. Preços não são alterados: a decisão é sua.</p>`;
+ $("bx").onclick=()=>baixar("csv");$("bxx").onclick=()=>baixar("xlsx");$("pos").hidden=false;$("out").scrollIntoView({behavior:"smooth"})}
+async function depois(cab,lin){const r=await auditar(cab,lin);
+ $("cmp").innerHTML=`<div class="cmp"><div class="kpi">Antes<b>${ANTES.resumo.corrigir} a corrigir · ${ANTES.resumo.revisar} a revisar</b></div><div class="kpi">Depois da implantação<b>${r.resumo.corrigir} a corrigir · ${r.resumo.revisar} a revisar</b></div><div class="kpi">Conformes<b style="color:var(--ok)">${ANTES.resumo.ok} → ${r.resumo.ok}</b></div></div>
+ <h2 style="margin-top:14px">Pendências que ficaram</h2>${tabela(r,cab,lin)}`}
+$("arq").onchange=async e=>{const f=e.target.files[0];if(!f)return;NOME=f.name.replace(/\.[^.]+$/,"");const o=await lerArquivo(f);CAB=o.cab;LIN=o.lin;$("go").disabled=false;$("st").textContent=`${LIN.length} itens lidos de ${f.name}.`};
+$("go").onclick=rodar;
+$("ex").onclick=async()=>{const r=await fetch("/exemplos/cadastro_erp_exemplo.csv");const f=new File([await r.blob()],"cadastro_erp_exemplo.csv");NOME="cadastro_erp_exemplo";const o=await lerArquivo(f);CAB=o.cab;LIN=o.lin;rodar()};
+$("arq2").onchange=async e=>{const f=e.target.files[0];if(!f)return;const o=await lerArquivo(f);depois(o.cab,o.lin)};
+$("sim").onclick=()=>{if(R)depois(R.arquivo.cabecalho,R.arquivo.linhas.map(l=>l.map(v=>String(v??""))))};
+</script>
+
+</body></html>
