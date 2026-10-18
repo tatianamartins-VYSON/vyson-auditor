@@ -19,6 +19,7 @@ import pathlib
 import re
 import time
 import urllib.parse
+import urllib.error
 import urllib.request
 
 import evolus
@@ -222,13 +223,26 @@ SISTEMA = ("Você é o auditor fiscal sênior que revisa o trabalho de uma equip
            "Use apenas os resultados recebidos; não invente lei, valor ou fato.")
 
 
+import threading as _th
+_VAGAS = _th.Semaphore(int(os.getenv("LLM_PARALELO", "3")))  # o serviço do modelo limita chamadas simultâneas
+
+
 def _llm(msgs, espera=60):
+    import time
     base, model = os.getenv("LLM_BASE_URL"), os.getenv("LLM_MODEL")
-    corpo = json.dumps({"model": model, "messages": msgs, "temperature": 0.1, "max_tokens": 500}).encode()
-    req = urllib.request.Request(base.rstrip("/") + "/chat/completions", data=corpo, method="POST",
-                                 headers={"Authorization": f"Bearer {os.getenv('LLM_API_KEY', 'x')}", "Content-Type": "application/json"})
-    with urllib.request.urlopen(req, timeout=max(2, espera)) as r:
-        return json.loads(r.read())["choices"][0]["message"]
+    corpo = json.dumps({"model": model, "messages": msgs, "temperature": 0.1, "max_tokens": 400}).encode()
+    fim = time.time() + espera
+    for tentativa in range(2):  # uma nova tentativa se o serviço recusar por excesso de chamadas
+        req = urllib.request.Request(base.rstrip("/") + "/chat/completions", data=corpo, method="POST",
+                                     headers={"Authorization": f"Bearer {os.getenv('LLM_API_KEY', 'x')}", "Content-Type": "application/json"})
+        with _VAGAS:
+            try:
+                with urllib.request.urlopen(req, timeout=max(2, min(25, fim - time.time()))) as r:
+                    return json.loads(r.read())["choices"][0]["message"]
+            except urllib.error.HTTPError as e:
+                if e.code not in (429, 502, 503) or tentativa or fim - time.time() < 6:
+                    raise
+        time.sleep(1.5)
 
 
 def _citacoes_ok(texto: str, resultados: str) -> bool:

@@ -80,9 +80,15 @@ class handler(BaseHTTPRequestHandler):
                             if lote.eh_lote(arqs):
                                 out.append(lote.auditar_lote(arqs))
                             else:
-                                out += [um(k, b) for k, b in arqs[:60]]
+                                out += [(k, b) for k, b in arqs[:60]]
                     else:
-                        out.append(um(x["nome"], dados))
+                        out.append((x["nome"], dados))
+                # as notas são auditadas em paralelo (cada uma faz 1 chamada ao modelo), mantendo a ordem de envio
+                from concurrent.futures import ThreadPoolExecutor
+                pend = [i for i, r in enumerate(out) if isinstance(r, tuple)]
+                with ThreadPoolExecutor(max_workers=8) as ex:
+                    for i, r in zip(pend, ex.map(lambda t: um(*t), [out[i] for i in pend])):
+                        out[i] = r
                 vistos = {}
                 for r in out:
                     k = (r.get("nota") or {}).pop("assinatura", None)
