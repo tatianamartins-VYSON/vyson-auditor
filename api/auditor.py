@@ -103,6 +103,12 @@ class handler(BaseHTTPRequestHandler):
                         else:
                             vistos[k] = r
                 return self._send(200, out)
+            if acao == "cadastro":
+                import cadastro
+                r = cadastro.auditar_cadastro([str(c) for c in (a.get("cabecalho") or [])], (a.get("linhas") or [])[:5000],
+                                              float(a.get("margem_min") or 0.10), float(a.get("aliq_ref") or 0.265))
+                r["parecer"], r["modo"] = agentes.parecer_cadastro(r)
+                return self._send(200, r)
             if acao == "processo":
                 import evolus
                 return self._send(200, {"evolus": evolus.processo(a.get("texto") or "")})

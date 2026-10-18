@@ -1,0 +1,10 @@
+Código;Descrição;NCM;Item LC 116;NBS;CST PIS/COFINS;cClassTrib;Custo;Preço de venda
+P001;Arroz tipo 1 5kg;10063021;;;01;;18,50;27,90
+P002;Refrigerante cola 2L;22021000;;;01;;4,20;9,99
+P003;Notebook 15 polegadas;84713012;;;01;;2800,00;3290,00
+P004;Cimento CP II 50kg;252329;;;01;;24,00;39,90
+P005;Shampoo 400ml;33051000;;;04;000001;9,80;12,50
+S001;Desenvolvimento de software sob encomenda;;1.04;;;;;
+S002;Consultoria contábil;;17.19;;;;120,00;250,00
+S003;Limpeza e conservação predial;;7.10;;;;80,00;95,00
+S004;Serviço inexistente;;99.99;;;;;
