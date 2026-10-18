@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Vyson Calc &amp; Negócios · Perito Judicial em lote</title>
+<meta name="description" content="Análise de processos em lote: extração por palavras-chave, cálculo com índices oficiais, parecer e análise crítica para revisão do perito.">
+<style>
+:root{--bg:#f4f6f8;--card:#fff;--ink:#0f1d24;--mut:#4f6068;--line:#dfe5ea;--az:#0b4a5a;--lar:#e08a3a;--ok:#1f9d63;--er:#e5484d}
+*{box-sizing:border-box}body{margin:0;font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink)}
+header{background:#fff;border-bottom:1px solid var(--line);padding:22px 16px}header .w{max-width:1100px;margin:0 auto}
+h1{margin:0;color:var(--az);font-size:28px}header p{margin:6px 0 0;color:var(--mut)}
+main{max-width:1100px;margin:20px auto;padding:0 16px;display:grid;gap:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;box-shadow:0 2px 10px rgba(15,29,36,.05)}
+h2{margin:0 0 10px;color:var(--az);font-size:21px}
+#drop{border:2px dashed #9bb3bc;border-radius:12px;padding:26px;text-align:center;cursor:pointer;background:#fafcfd}
+textarea{width:100%;min-height:120px;border:1px solid var(--line);border-radius:10px;padding:10px;font:14px/1.5 inherit}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:12px}
+button{background:var(--az);color:#fff;border:0;border-radius:10px;padding:11px 18px;font-weight:700;cursor:pointer;font-size:15px}
+button.sec{background:#fff;color:var(--az);border:1px solid var(--az)}
+table{width:100%;border-collapse:collapse;font-size:14px}th,td{border-bottom:1px solid var(--line);padding:8px;text-align:left;vertical-align:top}th{color:var(--mut);font-size:12px;text-transform:uppercase}
+.tag{font-size:12px;font-weight:700;padding:2px 9px;border-radius:99px}.t-er{background:#fde8e9;color:var(--er)}.t-al{background:#fff1e3;color:#9a4a00}.t-ok{background:#e3f6ec;color:var(--ok)}
+.proc p,.proc li{text-align:justify}.mut{color:var(--mut);font-size:14px}
+</style>
+</head>
+<body>
+<header><div class="w"><h1>Perito Judicial · análise em lote</h1><p>Envie vários processos de uma vez. A Vyson extrai os dados por palavras-chave, calcula com os índices oficiais e escreve o parecer com análise crítica. O perito só revisa e valida.</p></div></header>
+<main>
+<section class="card">
+<h2>1. Processos</h2>
+<div id="drop" tabindex="0" role="button"><b>Clique ou arraste os processos aqui</b><br><span class="mut">PDF com texto ou .txt · vários arquivos de uma vez · o conteúdo é lido no seu navegador e não é enviado a servidores</span></div>
+<input type="file" id="arq" multiple accept=".pdf,.txt" hidden>
+<p class="mut" style="margin:14px 0 6px">Ou cole o texto de um processo (separe processos com uma linha contendo apenas ---):</p>
+<textarea id="txt" placeholder="Cole aqui a sentença, o acórdão ou a planilha..."></textarea>
+<details style="margin-top:14px"><summary style="cursor:pointer;font-weight:700;color:var(--az)">Personalizar laudo e custas judiciais</summary>
+<div class="row"><input id="pnome" placeholder="Nome do responsável" style="flex:1;min-width:200px;padding:9px;border:1px solid var(--line);border-radius:8px"><input id="preg" placeholder="Registro (CRC, OAB...)" style="width:200px;padding:9px;border:1px solid var(--line);border-radius:8px"><input id="porg" placeholder="Órgão, escritório ou empresa" style="flex:1;min-width:200px;padding:9px;border:1px solid var(--line);border-radius:8px"></div>
+<div class="row"><span class="mut">Custas conforme a tabela do tribunal:</span><input id="cpct" type="number" step="0.01" placeholder="% sobre o valor" style="width:150px;padding:9px;border:1px solid var(--line);border-radius:8px"><input id="cmin" type="number" step="0.01" placeholder="mínimo R$" style="width:130px;padding:9px;border:1px solid var(--line);border-radius:8px"><input id="cmax" type="number" step="0.01" placeholder="máximo R$" style="width:130px;padding:9px;border:1px solid var(--line);border-radius:8px"></div>
+<p class="mut">Os dados ficam só no seu navegador.</p></details>
+<label class="row" style="margin-top:10px"><input type="checkbox" id="evo"> Extrair também com o agente de IA da Evolus (complementa as palavras-chave; nomes, CPF e CNPJ são mascarados antes do envio)</label>
+<div class="row"><button id="go">Analisar em lote</button><button class="sec" id="ex">Ver exemplo</button><span id="st" class="mut"></span></div>
+</section>
+<div id="out"></div>
+</main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="/perito/calculo.js"></script>
+<script>
+const $=id=>document.getElementById(id),esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const brl=v=>v==null||isNaN(v)?"—":"R$ "+Number(v).toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2});
+const iso=d=>{const m=String(d||"").match(/(\d{2})\/(\d{2})\/(\d{4})/);return m?`${m[3]}-${m[2]}-${m[1]}`:null};
+const br=d=>d?d.split("-").reverse().join("/"):"—";
+let IND=null,docs=[];
+fetch("/perito/indices.json",{cache:"no-store"}).then(r=>r.json()).then(j=>IND=j);
+if(window.pdfjsLib)pdfjsLib.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+async function lerPDF(f){const pdf=await pdfjsLib.getDocument({data:await f.arrayBuffer()}).promise;let t="";for(let i=1;i<=pdf.numPages;i++){const p=await pdf.getPage(i);t+=(await p.getTextContent()).items.map(x=>x.str).join(" ")+"\n"}return t}
+async function ler(files){for(const f of files){const t=/\.pdf$/i.test(f.name)?await lerPDF(f):await f.text();docs.push({nome:f.name,texto:t})}$("st").textContent=docs.length+" processo(s) carregado(s)."}
+$("drop").onclick=()=>$("arq").click();$("arq").onchange=e=>ler(e.target.files);
+$("drop").ondragover=e=>{e.preventDefault()};$("drop").ondrop=e=>{e.preventDefault();ler(e.dataTransfer.files)};
+
+// ---------- extração por palavras-chave (sem IA, regra auditável) ----------
+const VAL=/R\$\s*([\d.]+,\d{2})/;
+const num=s=>s?Number(s.replace(/\./g,"").replace(",",".")):null;
+function extrair(t){
+ const T=t.replace(/\s+/g," "),low=T.toLowerCase(),out={};
+ out.processo=(T.match(/\d{7}-\d{2}\.\d{4}\.\d\.\d{2}\.\d{4}/)||[])[0]||null;
+ const cond=T.match(/(?:condena\w*|pagamento d[ae]|valor d[ae] condena\w*|importância d[ae])[^.]{0,120}?R\$\s*([\d.]+,\d{2})/i)||T.match(VAL);
+ out.valor=cond?num(cond[1]):null;
+ const base=T.match(/(?:a partir de|desde|data[- ]base[^\d]{0,15}|contad[oa]s? de)\s*(\d{2}\/\d{2}\/\d{4})/i);out.base=base?iso(base[1]):null;
+ const ate=T.match(/(?:até|ate)\s*(\d{2}\/\d{2}\/\d{4})/i);out.fim=ate?iso(ate[1]):new Date().toISOString().slice(0,7)+"-01";
+ out.indice=["IPCA-E","IPCA-15","IPCA","INPC","IGP-M","SELIC","TR"].find(i=>new RegExp(i.replace("-","[- ]?"),"i").test(T))||null;
+ const j=T.match(/juros[^.]{0,60}?(\d+(?:,\d+)?)\s*%\s*(?:ao|a\.?)\s*m[eê]s/i);out.juros=j?num(j[1].includes(",")?j[1]:j[1]+",00"):null;
+ const jd=T.match(/juros[^.]{0,80}?(?:a partir d[ao]|desde)\s*(?:a\s*)?(cita[cç][aã]o|ajuizamento|evento danoso|tr[aâ]nsito|\d{2}\/\d{2}\/\d{4})/i);out.jurosDesde=jd?jd[1]:null;
+ const h=T.match(/honor[aá]rios[^.]{0,80}?(\d{1,2})\s*%/i);out.honor=h?Number(h[1]):null;
+ const m=T.match(/multa[^.]{0,60}?(\d{1,2})\s*%/i);out.multa=m?Number(m[1]):null;
+ out.fazenda=/(munic[ií]pio|estado d[eo]|uni[aã]o|fazenda p[uú]blica|autarquia|inss)/i.test(T);
+ out.trabalhista=/(reclamante|reclamad[ao]|justi[cç]a do trabalho|\bTRT\b|CLT)/i.test(T);
+ out.transito=/tr[aâ]nsit\w* em julgado/i.test(T);
+ return out}
+
+// ---------- análise crítica (regras com base legal) ----------
+function critica(e){const A=[];const add=(n,c,m,f)=>A.push({nivel:n,campo:c,msg:m,fonte:f});
+ if(!e.processo)add("alerta","Número do processo","Número no padrão CNJ não encontrado.","Resolução CNJ 65/2008");
+ if(!e.valor)add("erro","Valor","Valor da condenação não encontrado: o cálculo depende dele.","CPC, art. 509, §2º");
+ if(!e.base)add("erro","Data-base","Termo inicial da correção não encontrado.","CPC, art. 509, §2º");
+ if(!e.indice)add("erro","Índice","Índice de correção não indicado na decisão: confirme com o juízo.","CPC, art. 491");
+ if(e.indice==="SELIC"&&e.juros)add("erro","SELIC + juros","SELIC já embute juros: somar juros de mora à SELIC gera dupla cobrança (bis in idem).","EC 113/2021, art. 3º; Manual de Cálculos da Justiça Federal 2026, item 4.2.2, Nota 1");
+ const MJF="Manual de Cálculos da Justiça Federal 2026 (Res. CJF 990/2026)";
+ if(e.fazenda&&e.base&&e.base>="2021-12-01"&&e.base<"2025-09-01"&&e.indice&&e.indice!=="SELIC")add("alerta","Fazenda Pública","Condenação da Fazenda Pública de 12/2021 a 08/2025: SELIC, uma única vez, para correção e juros.","EC 113/2021, art. 3º; "+MJF+", item 4.2.1.1");
+ if(e.base&&e.base>="2025-09-01"&&e.indice&&!["IPCA-15","INPC"].includes(e.indice))add("alerta","EC 136/2025","A partir de 09/2025, antes do requisitório: correção pelo IPCA-15 (INPC no previdenciário) e juros pela taxa legal (SELIC menos o índice).","EC 136/2025; STF, Tema 1.419; Lei 14.905/2024; "+MJF+", itens 4.2.1.1 e 4.3.1.1");
+ if(!e.fazenda&&e.base&&e.base>="2024-09-01"&&e.base<"2025-09-01"&&e.indice==="IPCA-E")add("alerta","Lei 14.905/2024","Devedor privado a partir de 09/2024: correção pelo IPCA-15 e juros pela taxa legal, salvo índice fixado na decisão.","CC, arts. 389 e 406; "+MJF+", item 4.2.1.1");
+ if(!e.fazenda&&e.juros&&e.base&&e.base>="2024-09-01")add("alerta","Taxa legal","Juros de mora a partir de 09/2024: taxa legal (SELIC menos IPCA-15), salvo taxa contratual ou fixada na decisão.","CC, art. 406; Res. CMN 5.171/2024; "+MJF+", item 4.2.2");
+ if(e.fazenda&&e.base&&e.base<"2021-12-01"&&e.indice==="TR")add("alerta","TR","TR afastada como índice de correção de condenações da Fazenda Pública: use IPCA-E até 11/2021.","STF, Tema 810 (RE 870.947)");
+ if(e.trabalhista&&e.indice&&!["IPCA-E","SELIC"].includes(e.indice))add("alerta","Trabalhista","Débito trabalhista: IPCA-E na fase pré-judicial e SELIC a partir do ajuizamento.","STF, ADC 58 e 59");
+ if(e.juros&&e.juros>1)add("alerta","Juros","Juros acima de 1% ao mês: confirme se há previsão contratual ou legal.","CC, art. 406");
+ if(e.juros&&e.indice!=="SELIC"&&e.jurosDesde&&!/\d{2}\/\d{2}\/\d{4}/.test(e.jurosDesde))add("alerta","Juros desde a "+e.jurosDesde,"A data do marco dos juros não consta no texto: os juros foram contados desde a data-base. Informe a data para ajustar.","CC, art. 405; CPC, art. 240");
+ if(e.juros&&!e.jurosDesde&&e.indice!=="SELIC")add("alerta","Juros","Termo inicial dos juros não identificado (citação, evento danoso ou outro).","CC, art. 405; STJ, Súmula 54");
+ if(e.transito&&A.some(a=>a.nivel!=="info"))add("info","Coisa julgada","A determinação do juiz transitada em julgado prevalece no cálculo: os pontos acima são registrados como divergência, sem alterar os parâmetros da decisão.","CPC, art. 509, §4º e art. 502");
+ if(!e.transito)add("info","Trânsito em julgado","Trânsito em julgado não mencionado: verifique se o cálculo é provisório.","CPC, art. 520");
+ return A}
+
+function calcular(e){if(!IND||!e.valor||!e.base||!e.indice||!IND[e.indice])return null;
+ const desde=e.jurosDesde&&/\d{2}\/\d{2}\/\d{4}/.test(e.jurosDesde)?iso(e.jurosDesde):null;
+ const r=CalcVyson.atualizar({valor:e.valor,base:e.base,fim:e.fim,serie:IND[e.indice].serie,nome:e.indice,jurosPct:e.indice==="SELIC"?0:(e.juros||0),jurosDesde:desde});
+ r.honor=e.honor?Math.round(r.total*e.honor)/100:0;r.multa=e.multa?Math.round(r.total*e.multa)/100:0;r.geral=Math.round((r.total+r.honor+r.multa)*100)/100;return r}
+
+function parecer(d){const e=d.e,c=d.c,er=d.A.filter(a=>a.nivel==="erro").length,al=d.A.filter(a=>a.nivel==="alerta").length;
+ let p=`Trata-se do processo ${e.processo||"(número não identificado)"}. `;
+ p+=c?`O valor de ${brl(e.valor)}, corrigido pelo índice ${e.indice} de ${br(e.base)} a ${br(e.fim)} (fator ${c.fator}), resulta em ${brl(c.corrigido)}${c.juros?`, acrescido de juros de ${brl(c.juros)}`:""}${c.honor?`, honorários de ${brl(c.honor)}`:""}${c.multa?` e multa de ${brl(c.multa)}`:""}, totalizando ${brl(c.geral)}. `:"Não foi possível concluir o cálculo porque faltam dados essenciais na decisão. ";
+ p+=er?`Foram identificadas ${er} inconsistência(s) que impedem a homologação do cálculo sem correção. `:al?`Há ${al} ponto(s) de atenção que devem ser confirmados antes da conclusão. `:"Os parâmetros extraídos estão coerentes com a legislação e a jurisprudência aplicáveis. ";
+ return p+"Cálculo e parecer gerados como apoio, sujeitos à revisão e validação do perito responsável."}
+
+async function viaEvolus(t,e){try{const r=await fetch("/api/auditor?acao=processo",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({texto:t})});const j=(await r.json()).evolus;if(!j||j.erro)return false;
+ const n=v=>{if(v==null||v==="")return null;if(typeof v==="number")return v;const m=String(v).match(/\d+(?:[.,]\d+)?/);return m?Number(m[0].replace(",",".")):null};const jr=j.juros||{};
+ e.processo=e.processo||j.numero_processo||null;e.valor=e.valor||n(j.valor_condenacao);e.base=e.base||j.data_base_calculo||null;
+ e.indice=e.indice||(j.indice_correcao||"").toUpperCase().replace("IPCAE","IPCA-E")||null;e.juros=e.juros||n(jr.taxa);
+ const ti=jr.termo_inicial||"";e.jurosDesde=/^\d{4}-\d{2}-\d{2}$/.test(ti)?br(ti):(j.data_citacao&&/cita/i.test(ti||e.jurosDesde||""))?br(j.data_citacao):(e.jurosDesde||ti||null);
+ e.honor=e.honor||n((j.honorarios||{}).percentual);e.transito=e.transito||!!j.data_transito_julgado;e.evolus=true;return true}catch(x){return false}}
+let LOTE="";const novoLote=()=>{const d=new Date(),z=n=>String(n).padStart(2,"0");return `VYS-${d.getFullYear()}${z(d.getMonth()+1)}${z(d.getDate())}-${z(d.getHours())}${z(d.getMinutes())}${z(d.getSeconds())}`};
+try{for(const k of ["pnome","preg","porg","cpct","cmin","cmax"]){const v=localStorage.getItem("vf_"+k);if(v)$(k).value=v;$(k).oninput=()=>{try{localStorage.setItem("vf_"+k,$(k).value)}catch(x){}}}}catch(x){}
+async function analisar(){LOTE=novoLote();if(!IND){$("st").textContent="Carregando índices oficiais...";return setTimeout(analisar,500)}
+ const lista=[...docs];const t=$("txt").value.trim();if(t)t.split(/\n\s*---\s*\n/).forEach((x,i)=>lista.push({nome:"Texto colado "+(i+1),texto:x}));
+ if(!lista.length){$("st").textContent="Envie ou cole pelo menos um processo.";return}
+ const R=[];for(const d of lista){const e=extrair(d.texto);if($("evo").checked){$("st").textContent="Consultando o agente Evolus...";await viaEvolus(d.texto,e)}R.push({d,e})}$("st").textContent="";
+ R.forEach((x,i)=>{const d=x.d,e=x.e;const A=critica(e);const c=calcular(e);const r={nome:d.nome,e,A,c};r.controle=LOTE+"-"+String(i+1).padStart(3,"0");
+ const cp=+$("cpct").value||0;if(cp&&(r.c||e.valor)){let cu=Math.round((r.c?r.c.geral:e.valor)*cp)/100;if(+$("cmin").value)cu=Math.max(cu,+$("cmin").value);if(+$("cmax").value)cu=Math.min(cu,+$("cmax").value);r.custas=cu}r.parecer=parecer(r);r.decisao=A.some(a=>a.nivel==="erro")?"corrigir":A.some(a=>a.nivel==="alerta")?"revisar":"validar";const vv=r.c?r.c.geral:(e.valor||0);r.prioridade=r.decisao==="corrigir"||vv>=500000?"ALTA":r.decisao==="revisar"||vv>=100000?"MÉDIA":"NORMAL";if(e.evolus)A.push({nivel:"info",campo:"Evolus",msg:"Dados complementados pelo agente Extrator de Processos na Evolus.",fonte:"Evolus (API)"});R[i]=r});
+ R.sort((a,b)=>({ALTA:0,"MÉDIA":1,NORMAL:2}[a.prioridade])-({ALTA:0,"MÉDIA":1,NORMAL:2}[b.prioridade]));window.RES=R;
+ try{const H=JSON.parse(localStorage.getItem("vf_lotes")||"[]");H.unshift({lote:LOTE,data:new Date().toISOString(),n:R.length,total:R.reduce((s,r)=>s+(r.c?r.c.geral:0),0)});localStorage.setItem("vf_lotes",JSON.stringify(H.slice(0,50)))}catch(x){}
+ mostrar(R)}
+$("go").onclick=analisar;
+$("ex").onclick=()=>{$("txt").value=`Processo nº 0801234-56.2024.8.02.0001. Vistos. JULGO PROCEDENTE o pedido e condeno a ré ao pagamento de R$ 50.000,00, corrigido pelo IPCA-E a partir de 10/01/2024, com juros de 1% ao mês a partir da citação, e honorários advocatícios de 10% sobre o valor da condenação. Sentença transitada em julgado.
+---
+Processo nº 0705678-90.2022.8.02.0001. Condeno o Município de Exemplo ao pagamento de R$ 120.000,00, atualizado pela TR desde 15/03/2022, acrescido de juros de 0,5% ao mês, e multa de 10%.
+---
+Processo nº 0009876-12.2023.5.19.0001. Reclamante: (fictício). Condeno a reclamada ao pagamento de R$ 30.000,00, corrigido pela SELIC a partir de 01/06/2023, com juros de 1% ao mês, honorários de 15%.`;docs=[];analisar()};
+
+const TAG={erro:"t-er",alerta:"t-al",info:"t-ok",ok:"t-ok"};
+function mostrar(R){const tot=R.reduce((s,r)=>s+(r.c?r.c.geral:0),0),cnt={validar:0,revisar:0,corrigir:0};R.forEach(r=>cnt[r.decisao]++);
+ const mx=Math.max(1,...Object.values(cnt)),cor={validar:"#1f9d63",revisar:"#e08a3a",corrigir:"#e5484d"};
+ let h=`<section class="card"><h2>2. Resumo do lote</h2><p>Lote nº <b>${LOTE}</b> · <b>${R.length}</b> processo(s) analisado(s), ordenados por prioridade · total calculado <b>${brl(tot)}</b>${R.some(r=>r.custas)?` · custas estimadas <b>${brl(R.reduce((s,r)=>s+(r.custas||0),0))}</b>`:""}.</p>
+ <table style="max-width:560px">${Object.entries(cnt).map(([k,v])=>`<tr><td style="width:120px;border:0">${k}</td><td style="border:0"><div style="background:${cor[k]};height:16px;border-radius:3px;width:${Math.round(100*v/mx)}%"></div></td><td style="border:0;width:40px"><b>${v}</b></td></tr>`).join("")}</table>
+ <div class="row"><button id="rdoc">Baixar laudo do lote (Word)</button><button class="sec" id="rpdf">Imprimir ou salvar em PDF</button><button class="sec" id="rcsv">Baixar planilha (Excel)</button></div></section>`;
+ R.forEach((r,i)=>{h+=`<section class="card proc"><p class="mut" style="margin:0">Controle nº ${r.controle} · prioridade <b>${r.prioridade}</b></p><h2>${i+1}. ${esc(r.e.processo||r.nome)} <span class="tag ${r.decisao==="corrigir"?"t-er":r.decisao==="revisar"?"t-al":"t-ok"}">${r.decisao.toUpperCase()}</span></h2>
+ <table><tr><th>Valor</th><th>Data-base</th><th>Índice</th><th>Juros</th><th>Honorários</th><th>Custas</th><th>Total</th></tr><tr><td>${brl(r.e.valor)}</td><td>${br(r.e.base)}</td><td>${esc(r.e.indice||"—")}</td><td>${r.e.juros?r.e.juros+"% a.m.":"—"}</td><td>${r.e.honor?r.e.honor+"%":"—"}</td><td>${r.custas?brl(r.custas):"—"}</td><td><b>${r.c?brl(r.c.geral):"—"}</b></td></tr></table>
+ <h3 style="font-size:16px;color:var(--az);margin:16px 0 6px">Análise crítica</h3><ul>${r.A.map(a=>`<li><span class="tag ${TAG[a.nivel]}">${a.nivel.toUpperCase()}</span> <b>${esc(a.campo)}:</b> ${esc(a.msg)} <span class="mut">[${esc(a.fonte)}]</span></li>`).join("")||"<li>Sem apontamentos.</li>"}</ul>
+ ${r.c&&r.c.alertas.length?`<p class="mut">Memória: ${esc(r.c.alertas.join(" "))}</p>`:""}
+ <p class="mut" style="margin:10px 0 0"><b>Critério:</b> o cálculo segue os parâmetros fixados pelo juiz (índice, data-base, juros, honorários) e a lei vigente; a análise crítica confronta a decisão com a legislação, a jurisprudência (STF e STJ) e o Manual de Cálculos da Justiça Federal 2026.</p>
+ <h3 style="font-size:16px;color:var(--az);margin:16px 0 6px">Parecer</h3><p>${esc(r.parecer)}</p>
+ <label class="row" style="margin-top:6px"><input type="checkbox" data-i="${i}" class="val"> Revisado e validado pelo perito</label></section>`});
+ $("out").innerHTML=h;
+ $("rcsv").onclick=()=>{const q=v=>'"'+String(v??"").replace(/"/g,'""')+'"';const L=[["Controle","Prioridade","Processo","Valor","Data-base","Índice","Juros % a.m.","Honorários %","Corrigido","Juros","Total","Custas","Decisão","Análise crítica","Parecer","Validado"].map(q).join(";")];
+  R.forEach((r,i)=>L.push([r.controle,r.prioridade,r.e.processo||r.nome,r.e.valor,br(r.e.base),r.e.indice,r.e.juros,r.e.honor,r.c&&r.c.corrigido,r.c&&r.c.juros,r.c&&r.c.geral,r.custas,r.decisao,r.A.map(a=>a.campo+": "+a.msg+" ["+a.fonte+"]").join(" | "),r.parecer,document.querySelector(`.val[data-i="${i}"]`).checked?"sim":"não"].map(q).join(";")));
+  baixar("﻿"+L.join("\r\n"),"text/csv;charset=utf-8","planilha_pericia_lote.csv")};
+ $("rdoc").onclick=()=>baixar("﻿"+laudo(R),"application/msword","laudo_lote.doc");
+ $("rpdf").onclick=()=>{const w=window.open("","_blank");w.document.write(laudo(R));w.document.close();setTimeout(()=>w.print(),400)}}
+function baixar(c,t,n){const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([c],{type:t}));a.download=n;a.click()}
+function laudo(R){const cel="border:1px solid #c9d3d9;padding:6px;vertical-align:top;font-size:10pt";
+ let h=`<html lang="pt-BR"><head><meta charset="utf-8"><title>Laudo de cálculos em lote</title><style>p,li{text-align:justify;line-height:1.45}@page{size:A4;margin:18mm}</style></head><body style="font-family:Arial,sans-serif;color:#14262d">
+ <h1 style="color:#0b4a5a;font-size:18pt">Laudo de cálculos judiciais em lote</h1><p><b>Lote nº ${LOTE}</b>${$("porg").value?" · "+esc($("porg").value):""}</p><p>Vyson Calc &amp; Negócios · emitido em ${new Date().toLocaleString("pt-BR")}</p>
+ <h2 style="color:#0b4a5a;font-size:13pt">1. Resumo</h2><table style="border-collapse:collapse;width:100%"><tr>${["Controle","Processo","Índice","Total","Prioridade"].map(x=>`<th style="${cel};background:#eef3f5">${x}</th>`).join("")}</tr>${R.map(r=>`<tr><td style="${cel}">${r.controle}</td><td style="${cel}">${esc(r.e.processo||r.nome)}</td><td style="${cel}">${esc(r.e.indice||"—")}</td><td style="${cel}">${r.c?brl(r.c.geral):"—"}</td><td style="${cel}">${r.prioridade}</td></tr>`).join("")}</table>`;
+ R.forEach((r,i)=>{h+=`<h2 style="color:#0b4a5a;font-size:13pt">${i+2}. ${esc(r.e.processo||r.nome)}</h2><p style="font-size:10pt">Controle nº ${r.controle} · prioridade ${r.prioridade}${r.custas?" · custas estimadas "+brl(r.custas):""}</p><p><b>Parecer:</b> ${esc(r.parecer)}</p><table style="border-collapse:collapse;width:100%"><tr>${["Nível","Análise crítica","Base legal"].map(x=>`<th style="${cel};background:#eef3f5">${x}</th>`).join("")}</tr>${r.A.map(a=>`<tr><td style="${cel}">${a.nivel.toUpperCase()}</td><td style="${cel};text-align:justify"><b>${esc(a.campo)}:</b> ${esc(a.msg)}</td><td style="${cel}">${esc(a.fonte)}</td></tr>`).join("")}</table>`});
+ return h+`<p style="font-size:10pt;margin-top:20px"><b>Ferramenta de apoio à decisão.</b> Todos os cálculos, relatórios e pareceres gerados devem ser revisados e validados pelo perito responsável antes de qualquer uso.</p><p style="font-size:10pt">Responsável: ${esc($("pnome").value)||"____________________________"} · Registro: ${esc($("preg").value)||"____________"}</p></body></html>`}
+</script>
+
+</body>
+</html>

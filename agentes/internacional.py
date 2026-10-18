@@ -206,3 +206,160 @@ def _fecha(F, nota, tipo, mun):
     ordem = {"erro": 0, "alerta": 1, "info": 2, "ok": 3}
     return {"nota": nota, "municipio": mun, "tipo": tipo, "achados": sorted(F, key=lambda f: ordem[f["nivel"]]), "erros": nerr, "alertas": nal,
             "decisao": "aprovar" if not nerr and not nal else "revisar" if not nerr else "devolver ao fornecedor"}
+
+
+# ---------------- Itália (FatturaPA) ----------------
+# DPR 633/1972 (IVA), DPR 642/1972 (imposta di bollo), Provvedimento AdE 30/04/2018 e especificações técnicas da FatturaPA 1.2
+FONTE_IT = "DPR 633/1972 (IVA) e especificações técnicas FatturaPA (Agenzia delle Entrate)"
+IVA_IT = {22.0, 10.0, 5.0, 4.0}
+NATURA_IT = {"N1": "Excluída (art. 15)", "N2": "Não sujeita", "N3": "Não tributável (exportação, intra-UE)", "N4": "Isenta (art. 10)",
+             "N5": "Regime do margem", "N6": "Reverse charge (inversão do contribuinte)", "N7": "IVA pago em outro país da UE"}
+TIPO_IT = {"TD01": "fatura", "TD02": "adiantamento", "TD04": "nota de crédito", "TD05": "nota de débito", "TD06": "honorários", "TD16": "integração reverse charge interno",
+           "TD17": "autofatura serviços do exterior", "TD18": "compra intra-UE de bens", "TD19": "compra de bens art. 17 c.2", "TD24": "fatura diferida", "TD25": "fatura diferida art. 21 c.4", "TD26": "venda de bens instrumentais", "TD27": "autoconsumo"}
+
+
+def eh_italia(texto):
+    return "FatturaElettronica" in texto[:3000] and "CedentePrestatore" in texto
+
+
+def piva_ok(p):
+    """Dígito verificador da Partita IVA italiana (11 dígitos)."""
+    if not re.fullmatch(r"\d{11}", p or ""):
+        return False
+    s = 0
+    for i, ch in enumerate(p[:10]):
+        d = int(ch)
+        if i % 2:
+            d *= 2
+            d = d - 9 if d > 9 else d
+        s += d
+    return (10 - s % 10) % 10 == int(p[10])
+
+
+def _vies(pais, numero):
+    """Consulta oficial da Comissão Europeia (VIES). None se o serviço não responder a tempo."""
+    import urllib.request
+    try:
+        with urllib.request.urlopen(f"https://ec.europa.eu/taxation_customs/vies/rest-api/ms/{pais}/vat/{numero}", timeout=4) as r:
+            return json.loads(r.read())
+    except Exception:  # noqa: BLE001
+        return None
+
+
+def auditar_italia(texto, vies=True):
+    r = ET.fromstring(texto)
+    for el in r.iter():  # a FatturaPA usa namespace só na raiz; os filhos vêm sem prefixo
+        el.tag = el.tag.split("}")[-1]
+    g = lambda p, base=r: (base.findtext(p) or "").strip() or None
+    F = []
+    add = lambda n, c, m, f=FONTE_IT: F.append({"nivel": n, "campo": c, "msg": m, "fonte": f})
+    ced = "FatturaElettronicaHeader/CedentePrestatore/DatiAnagrafici"
+    ces = "FatturaElettronicaHeader/CessionarioCommittente/DatiAnagrafici"
+    body = r.find("FatturaElettronicaBody")
+    if body is None:
+        add("erro", "Estrutura", "Arquivo sem o corpo da fatura (FatturaElettronicaBody).", "Especificações técnicas FatturaPA")
+        return _fecha(F, {"origem": "FatturaPA (Itália)"}, "Fattura elettronica (Itália)", "Itália")
+    dg = "DatiGenerali/DatiGeneraliDocumento"
+    nome = lambda b: g(b + "/Anagrafica/Denominazione") or " ".join(filter(None, (g(b + "/Anagrafica/Nome"), g(b + "/Anagrafica/Cognome")))) or None
+    pais_v, piva_v = g(ced + "/IdFiscaleIVA/IdPaese"), g(ced + "/IdFiscaleIVA/IdCodice")
+    pais_c, piva_c = g(ces + "/IdFiscaleIVA/IdPaese"), g(ces + "/IdFiscaleIVA/IdCodice")
+    moeda = g(dg + "/Divisa", body)
+    nota = {"origem": "Fattura elettronica (FatturaPA, Itália)", "numero": g(dg + "/Numero", body), "emissao": g(dg + "/Data", body),
+            "prestador_cnpj": f"{pais_v or ''}{piva_v or ''}", "prestador_nome": nome(ced), "tomador_cnpj": f"{pais_c or ''}{piva_c or ''}",
+            "tomador_nome": nome(ces), "municipio": "Itália", "valor_servicos": _r(g(dg + "/ImportoTotaleDocumento", body))}
+    try:
+        if nota["emissao"] and date.fromisoformat(nota["emissao"][:10]) > date.today():
+            add("erro", "Data", f"Data de emissão {nota['emissao']} no futuro.", "DPR 633/1972, art. 21, c.4")
+    except ValueError:
+        add("erro", "Data", f"Data de emissão '{nota['emissao']}' em formato inválido (use AAAA-MM-DD).", "Especificações técnicas FatturaPA")
+    tipo = g(dg + "/TipoDocumento", body)
+    if tipo in TIPO_IT:
+        add("ok", "Tipo de documento", f"{tipo}: {TIPO_IT[tipo]}.", "Especificações técnicas FatturaPA")
+    else:
+        add("erro", "Tipo de documento", f"Tipo '{tipo}' fora da tabela da FatturaPA (TD01 a TD29).", "Especificações técnicas FatturaPA")
+    for campo, val in (("Número", nota["numero"]), ("Data", nota["emissao"]), ("Fornecedor (cedente)", nota["prestador_nome"])):
+        if not val:
+            add("erro", campo, f"{campo} ausente: dado obrigatório da fatura.", "DPR 633/1972, art. 21")
+    if moeda and moeda != "EUR":
+        add("alerta", "Moeda", f"Fatura em {moeda}: a IVA deve ser expressa também em euro.", "DPR 633/1972, art. 21, c.2")
+    for papel, pais, piva in (("fornecedor", pais_v, piva_v), ("cliente", pais_c, piva_c)):
+        if not piva:
+            if papel == "fornecedor":
+                add("erro", "Partita IVA", "Fatura sem a Partita IVA do fornecedor.", "DPR 633/1972, art. 21, c.2")
+            continue
+        if pais == "IT" and not piva_ok(piva):
+            add("erro", "Partita IVA", f"Partita IVA do {papel} IT{piva} com dígito verificador inválido.", "DPR 633/1972, art. 35")
+            continue
+        v = _vies(pais, piva) if vies and pais and pais != "IT" else None  # VIES vale para operações intra-UE
+        if v and v.get("isValid") and nome(ced if papel == "fornecedor" else ces) and (v.get("name") or "").strip() not in ("", "---"):
+            n1 = re.sub(r"[^a-z0-9]", "", (nome(ced if papel == "fornecedor" else ces) or "").lower())[:8]
+            if n1 and n1 not in re.sub(r"[^a-z0-9]", "", v["name"].lower()):
+                add("alerta", "VIES", f"Nome na fatura difere do nome no VIES ({v['name'].strip()}): confirme o cadastro do {papel}.", "VIES, Comissão Europeia")
+        if v and v.get("isValid"):
+            add("ok", "VIES", f"Partita IVA do {papel} {pais}{piva} ativa no VIES: {(v.get('name') or '').strip()}.", "VIES, Comissão Europeia")
+        elif v and v.get("isValid") is False:
+            add("erro", "VIES", f"Partita IVA do {papel} {pais}{piva} não está ativa no VIES.", "VIES, Comissão Europeia")
+        elif pais == "IT":
+            add("ok", "Partita IVA", f"Partita IVA do {papel} IT{piva} com dígito verificador correto.", "DPR 633/1972, art. 35")
+    soma_lin = {}
+    for ln in body.findall("DatiBeniServizi/DettaglioLinee"):
+        k = g("NumeroLinea", ln) or "?"
+        q, pu, pt = _r(g("Quantita", ln) or 1), _r(g("PrezzoUnitario", ln)), _r(g("PrezzoTotale", ln))
+        if pu and abs(q * pu - pt) > 0.01 and not ln.findall("ScontoMaggiorazione"):
+            add("erro", f"Linha {k}", f"Total da linha € {pt:,.2f} difere de {q:g} × € {pu:,.2f} = € {q * pu:,.2f}.", "Especificações técnicas FatturaPA")
+        chave = (_r(g("AliquotaIVA", ln)), g("Natura", ln))
+        soma_lin[chave] = soma_lin.get(chave, 0) + pt
+    base_tot = imp_tot = 0.0
+    split = False
+    for rp in body.findall("DatiBeniServizi/DatiRiepilogo"):
+        aliq, nat = _r(g("AliquotaIVA", rp)), g("Natura", rp)
+        base, imp, esig = _r(g("ImponibileImporto", rp)), _r(g("Imposta", rp)), g("EsigibilitaIVA", rp)
+        base_tot += base
+        imp_tot += imp
+        if aliq:
+            if aliq not in IVA_IT:
+                add("erro", "Alíquota IVA", f"Alíquota de {aliq:g}% não existe na Itália (22%, 10%, 5% ou 4%).", "DPR 633/1972, art. 16 e Tabela A")
+            else:
+                add("ok", "Alíquota IVA", f"Alíquota de {aliq:g}% prevista na lei italiana.", "DPR 633/1972, art. 16 e Tabela A")
+            if abs(base * aliq / 100 - imp) > 0.01:
+                add("erro", "Valor da IVA", f"IVA de € {imp:,.2f} difere de € {base:,.2f} × {aliq:g}% = € {base * aliq / 100:,.2f}.", "DPR 633/1972, art. 16")
+            elif aliq in IVA_IT:
+                add("ok", "Valor da IVA", f"IVA de € {imp:,.2f} = € {base:,.2f} × {aliq:g}%.", "DPR 633/1972, art. 16")
+        else:
+            cod = (nat or "")[:2]
+            if cod not in NATURA_IT:
+                add("erro", "Natura", "Operação com IVA zero sem o código Natura (N1 a N7): a fatura é rejeitada pelo SdI.", "Especificações técnicas FatturaPA")
+            else:
+                add("info", "Natura", f"{nat}: {NATURA_IT[cod]}.", FONTE_IT)
+                if cod in ("N2", "N3", "N4") and not g("RiferimentoNormativo", rp):
+                    add("alerta", "Fundamento legal", f"Operação {nat} sem o artigo de lei que justifica a não incidência (RiferimentoNormativo).", "DPR 633/1972, art. 21, c.6")
+                if cod == "N6":
+                    add("info", "Reverse charge", "Inversão do contribuinte: o cliente integra a fatura e recolhe a IVA (documento TD16/TD17).", "DPR 633/1972, art. 17, c.6")
+        if esig == "S":
+            split = True
+            add("info", "Split payment", "IVA com split payment: a administração pública paga a IVA diretamente ao Erário; o fornecedor recebe só o valor sem IVA.", "DPR 633/1972, art. 17-ter")
+        lin = soma_lin.get((aliq, nat))
+        if lin is not None and abs(lin - base) > 0.01:
+            add("alerta", "Resumo", f"Soma das linhas a {aliq:g}% (€ {lin:,.2f}) difere da base do resumo (€ {base:,.2f}).", "Especificações técnicas FatturaPA")
+    tot = nota["valor_servicos"]
+    if tot and abs(tot - (base_tot + imp_tot)) > 0.02:
+        add("alerta", "Totais", f"Total do documento € {tot:,.2f} difere de base + IVA = € {base_tot + imp_tot:,.2f} (verifique descontos, bollo ou arredondamentos).", "Especificações técnicas FatturaPA")
+    elif tot:
+        add("ok", "Totais", f"Total do documento € {tot:,.2f} confere com base + IVA.", "Especificações técnicas FatturaPA")
+    pag = sum(_r(g("ImportoPagamento", dp)) for dp in body.findall("DatiPagamento/DettaglioPagamento"))
+    if pag and tot:
+        esperado = tot - (imp_tot if split else 0) - _r(g(dg + "/DatiRitenuta/ImportoRitenuta", body))
+        if abs(pag - esperado) > 0.02:
+            add("alerta", "Pagamento", f"Valor a pagar € {pag:,.2f} difere do esperado € {esperado:,.2f} (total{' − IVA split payment' if split else ''} − ritenuta).", "Especificações técnicas FatturaPA")
+        else:
+            add("ok", "Pagamento", f"Valor a pagar € {pag:,.2f} confere com total, split payment e ritenuta.", "Especificações técnicas FatturaPA")
+    rit = body.find(dg + "/DatiRitenuta")
+    if rit is not None:
+        add("info", "Ritenuta d'acconto", f"Retenção na fonte {g('TipoRitenuta', rit)} de {g('AliquotaRitenuta', rit)}% (€ {g('ImportoRitenuta', rit)}): o cliente recolhe pelo F24 até o dia 16 do mês seguinte.", "DPR 600/1973, art. 25")
+    isento = sum(_r(g("ImponibileImporto", rp)) for rp in body.findall("DatiBeniServizi/DatiRiepilogo") if (g("Natura", rp) or "")[:2] in ("N1", "N2", "N3", "N4") and not _r(g("AliquotaIVA", rp)))
+    if isento > 77.47 and body.find(dg + "/DatiBollo") is None:
+        add("alerta", "Imposta di bollo", f"Operações sem IVA de € {isento:,.2f} (acima de € 77,47) sem a marca de bollo virtual de € 2,00.", "DPR 642/1972, Tabela A, art. 13")
+    if any(f["nivel"] == "erro" for f in F):
+        add("alerta", "Sanções", "Fatura com erro de IVA pode gerar sanção de 70% a 140% do imposto (mínimo € 250), reduzida com correção espontânea (ravvedimento operoso).", "D.Lgs. 471/1997, art. 6, e D.Lgs. 472/1997, art. 13")
+    nota["split_payment"] = split
+    return _fecha(F, nota, "Fattura elettronica (Itália)", "Itália")

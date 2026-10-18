@@ -41,7 +41,30 @@ def _xml(texto: str) -> dict:
         retido = todos["IssRetido"] == "1"
     else:
         retido = None
-    return {
+    tom = None
+    for el in raiz.iter():
+        t = el.tag.split("}")[-1].lower()
+        if t.startswith("toma") or t == "tomadorservico":
+            c = next((x.text.strip() for x in el.iter() if x.tag.split("}")[-1] in ("Cnpj", "CNPJ", "Cpf", "CPF") and x.text), None)
+            if c:
+                tom = c
+                break
+    op = g("OptanteSimplesNacional", "opSimpNac")
+    simples = (op == "1") if "OptanteSimplesNacional" in todos else (op in ("2", "3") if op else None)
+    ref = {}
+    for el in raiz.iter():
+        t = el.tag.split("}")[-1]
+        if t in ("IBSCBS", "gIBSCBS"):
+            for x in el.iter():
+                n = x.tag.split("}")[-1]
+                if n in ("CST", "cClassTrib", "vBC", "vIBS", "vCBS", "pIBSUF", "pIBSMun", "pCBS", "vIBSUF", "vIBSMun") and x.text and n not in ref:
+                    ref[n] = x.text.strip()
+    extra = {"atividade": g("DescricaoCodigoTributacaoMunicipio", "xTribMun", "xTribNac"), "ref_nbs": g("CodigoNbs", "cNBS"), "ref_cindop": g("cIndOp"), "ref_cst": ref.get("CST"), "ref_cclass": ref.get("cClassTrib"),
+             "ref_vbc": _num(ref.get("vBC")), "ref_vibs": _num(ref.get("vIBS")), "ref_vcbs": _num(ref.get("vCBS")),
+             "pis_valor": _num(g("vPis")), "cofins_valor": _num(g("vCofins")),
+             "tomador_cnpj": tom, "simples": simples, "ir_retido": _num(g("ValorIr", "vRetIRRF")), "csll_retido": _num(g("ValorCsll", "vRetCSLL")),
+             "pis_retido": _num(g("ValorPis")), "cofins_retido": _num(g("ValorCofins"))}
+    return extra | {k: v for k, v in {
         "numero": g("nNFSe", "Numero", "nDPS"), "emissao": g("dhEmi", "DataEmissao", "dCompet"),
         "prestador_cnpj": g("CNPJ", "Cnpj"), "prestador_nome": g("xNome", "RazaoSocial"),
         "tomador_cnpj": None, "tomador_nome": None,
@@ -52,7 +75,7 @@ def _xml(texto: str) -> dict:
         "aliquota_iss": aliq, "valor_iss": _num(g("vISSQN", "ValorIss")),
         "iss_retido": retido,
         "inss_retido": _num(g("vRetCP", "ValorInss")), "valor_liquido": _num(g("vLiq", "ValorLiquidoNfse")),
-    }
+    }.items() if not (k == "tomador_cnpj" and v is None)}
 
 
 ROTULOS = {
@@ -71,7 +94,40 @@ ROTULOS = {
 }
 
 
+def _giss(texto: str) -> dict | None:
+    """Layout da NFS-e do GISS (Maceió e outros municípios): 'Atividade Econômica 17.01 / 8211300 - ...'."""
+    if not re.search(r"giss\.com\.br|Atividade Econ[ôo]mica", texto, re.I):
+        return None
+    f = lambda rx, n=1: (lambda m: m.group(n).strip() if m else None)(re.search(rx, texto, re.I))
+    marca = lambda rx: (lambda m: "X" in m.group(1).upper() if m else None)(re.search(rx, texto, re.I))
+    cn = re.findall(r"CPF/CNPJ:\s*([\d./-]{11,18})", texto)
+    fed = re.search(r"PIS\s+Tipo PIS\s+COFINS.*?\n\s*([\d.,]+)\s+\S.*?\s([\d.,]+)\s+\S.*?\s([\d.,]+)\s+([\d.,]+)\s+([\d.,]+)", texto, re.I)
+    mun = f(r"Mun[íi]c[íi]pio Incid[êe]ncia\s+([A-ZÀ-Ú ]+)\s*-\s*([A-Z]{2})")
+    d = {k: None for k in CAMPOS}
+    d.update({"numero": f(r"NFS-?e\s*\n\s*(\d+)\s*\n") or f(r"NFS-?e\s+(\d+)\b"), "emissao": f(r"Emiss[ãa]o da NFS-?e\s*\n?\s*([\d/]{10})"),
+              "prestador_cnpj": cn[0] if cn else None, "tomador_cnpj": cn[1] if len(cn) > 1 else None,
+              "item_lc116": (lambda v: v and f"{int(v.split('.')[0])}.{v.split('.')[1]}")(f(r"Atividade Econ[ôo]mica\s*\n?\s*(\d{1,2}\.\d{2})")),
+              "cod_municipal": f(r"Atividade Econ[ôo]mica\s*\n?\s*\d{1,2}\.\d{2}\s*/\s*(\d+)"),
+              "descricao": f(r"Discrimina[çc][ãa]o do Servi[çc]o\s*\n(.+)"),
+              "valor_servicos": _num(f(r"Valor do Servi[çc]o\s+([\d.]+,\d{2})")), "deducoes": _num(f(r"Dedu[çc][õo]es Previstas em Lei\s+([\d.]+,\d{2})")),
+              "aliquota_iss": _num(f(r"Al[íi]quota\s+([\d.]+,\d{2})")), "valor_iss": _num(f(r"\bISSQN\s+([\d.]+,\d{2})")),
+              "valor_liquido": _num(f(r"Valor L[íi]quido\s+([\d.]+,\d{2})")),
+              "municipio": (mun.title() if mun else None) and ("Maceió/AL" if "MACEI" in mun.upper() else mun),
+              "simples": marca(r"Simples Nacional\s*\(\s*(X?)\s*\)\s*Sim"), "iss_retido": marca(r"ISSQN a Reter\s*\(\s*(X?)\s*\)\s*Sim"),
+              "inss_retido": _num(fed.group(3)) if fed else None, "ir_retido": _num(fed.group(4)) if fed else None, "csll_retido": _num(fed.group(5)) if fed else None,
+              "pis_retido": _num(fed.group(1)) if fed else None, "cofins_retido": _num(fed.group(2)) if fed else None,
+              "isento": False, "locacao_bens": False,
+              "atividade": f(r"Atividade Econ[ôo]mica\s*\n?\s*\d{1,2}\.\d{2}\s*/\s*\d+\s*-\s*(.+)"),
+              "ref_nbs": f(r"Nomenclatura Brasileira de Servi[çc]os\s+([\d.]+)"), "ref_cindop": f(r"Indicador de Opera[çc][ãa]o\s+(\d{6})"),
+              "ref_cst": f(r"Situa[çc][ãa]o Tribut[áa]ria\s+(\d{3})"), "ref_cclass": f(r"Classifica[çc][ãa]o Tribut[áa]ria\s+(\d{6})"),
+              "ref_vibs": _num(f(r"\bIBS\s+([\d.]+,\d{2})")), "ref_vcbs": _num(f(r"\bCBS\s+([\d.]+,\d{2})"))})
+    return d
+
+
 def _texto(texto: str) -> dict:
+    g = _giss(texto)
+    if g:
+        return g
     d = {k: None for k in CAMPOS}
     for k, rx in ROTULOS.items():
         m = re.search(rx, texto, re.I)

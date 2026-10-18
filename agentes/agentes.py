@@ -25,7 +25,7 @@ import evolus
 from auditar import auditar
 from extrair import extrair
 from nfe import auditar_nfe, eh_nfe
-from internacional import auditar_india, auditar_uae, eh_india, eh_uae
+from internacional import auditar_india, auditar_italia, auditar_uae, eh_india, eh_italia, eh_uae
 
 _R = pathlib.Path(__file__).resolve().parents[1]
 BASE = next((p for p in (_R / "data", _R / "public" / "fiscal") if p.is_dir()), _R / "data")
@@ -53,6 +53,10 @@ def ag_extrator(s: Sessao, **_):
         s.nota = {"tipo": "Fatura UAE (VAT)", "_txt": txt}
         s.log("Extrator", "Identificou fatura eletrônica dos Emirados (UBL/PINT AE, VAT)")
         return {"tipo": "Fatura UAE (VAT)", "proximo": "auditor_vat_uae"}
+    if eh_italia(txt):
+        s.nota = {"tipo": "Fattura elettronica (Itália)", "_txt": txt}
+        s.log("Extrator", "Identificou fatura eletrônica da Itália (FatturaPA)")
+        return {"tipo": "Fattura elettronica (Itália)", "proximo": "auditor_iva_italia"}
     if eh_india(txt):
         s.nota = {"tipo": "e-Invoice Índia (GST)", "_txt": txt}
         s.log("Extrator", "Identificou e-invoice da Índia (JSON do IRP, GST)")
@@ -63,13 +67,6 @@ def ag_extrator(s: Sessao, **_):
         s.log("Extrator", "Identificou NF-e de mercadoria (XML modelo 55)")
         return {"tipo": "NF-e mercadoria", "proximo": "auditor_icms"}
     s.nota = extrair(s.nome, s.dados)
-    if not s.nota.get("valor_servicos") and evolus.ligado():  # digitalização/foto: extrator de documentos do Evolus
-        try:
-            ev = evolus.extrair(s.nome, s.dados) or {}
-            s.nota.update({k: v for k, v in ev.items() if v not in (None, "") and not s.nota.get(k)})
-            s.log("Extrator (Evolus)", "Leitor local não achou o valor; o extrator de documentos do Evolus leu a nota", ", ".join(list(ev)[:8]))
-        except Exception as e:  # noqa: BLE001
-            s.log("Extrator (Evolus)", "Indisponível; seguiu com a leitura local", type(e).__name__)
     s.nota["tipo"] = "NFS-e serviço"
     campos = {k: v for k, v in s.nota.items() if v not in (None, "", False) and not k.startswith("_")}
     s.log("Extrator", f"Leu {s.nota['origem']} de NFS-e: {len(campos)} campos", ", ".join(f"{k}={v}" for k, v in list(campos.items())[:8]))
@@ -94,6 +91,13 @@ def ag_auditor_vat_uae(s: Sessao, **_):
     s.auditoria = auditar_uae(s.nota["_txt"])
     s.nota = {**s.auditoria["nota"], "tipo": s.auditoria["tipo"]}
     s.log("Auditor VAT (Emirados)", f"{s.auditoria['erros']} erro(s), {s.auditoria['alertas']} alerta(s) → {s.auditoria['decisao']}")
+    return _resumo(s)
+
+
+def ag_auditor_iva_italia(s: Sessao, **_):
+    s.auditoria = auditar_italia(s.nota["_txt"])
+    s.nota = {**s.auditoria["nota"], "tipo": s.auditoria["tipo"]}
+    s.log("Auditor IVA (Itália)", f"{s.auditoria['erros']} erro(s), {s.auditoria['alertas']} alerta(s) → {s.auditoria['decisao']}")
     return _resumo(s)
 
 
@@ -198,7 +202,7 @@ def ag_comunicador(s: Sessao, **_):
 
 
 AGENTES = {"extrator": ag_extrator, "auditor_iss": ag_auditor_iss, "auditor_icms": ag_auditor_icms,
-           "auditor_vat_uae": ag_auditor_vat_uae, "auditor_gst_india": ag_auditor_gst_india, "cnpj": ag_cnpj, "juridico": ag_juridico,
+           "auditor_vat_uae": ag_auditor_vat_uae, "auditor_gst_india": ag_auditor_gst_india, "auditor_iva_italia": ag_auditor_iva_italia, "cnpj": ag_cnpj, "juridico": ag_juridico,
            "jurisprudencia": ag_jurisprudencia, "comunicador": ag_comunicador}
 DESCR = {
     "extrator": "Lê o arquivo enviado e identifica se é NFS-e (serviço) ou NF-e (mercadoria). Sempre o primeiro passo.",
@@ -206,64 +210,77 @@ DESCR = {
     "auditor_icms": "Audita NF-e: chave, autorização, CNPJ, NCM, CFOP, alíquota interestadual, ICMS por item, totais e DIFAL.",
     "auditor_vat_uae": "Audita fatura dos Emirados Árabes (Dubai): TRN, categoria e alíquota de VAT (5%, zero, isento), valor do VAT em AED e campos obrigatórios.",
     "auditor_gst_india": "Audita e-invoice da Índia: GSTIN com dígito verificador, CGST+SGST ou IGST conforme o estado, alíquotas do GST 2.0, SAC/HSN e IRN.",
+    "auditor_iva_italia": "Audita fatura eletrônica da Itália (FatturaPA): Partita IVA com dígito verificador e VIES, alíquotas de IVA (22, 10, 5, 4%), Natura N1 a N7, reverse charge, split payment, ritenuta e imposta di bollo.",
     "cnpj": "Consulta a situação cadastral do CNPJ do emitente na Receita Federal. Parâmetro opcional: cnpj.",
     "juridico": "Busca na base de legislação o fundamento legal dos achados. Parâmetro opcional: tema.",
     "jurisprudencia": "Confronta a nota com decisões vinculantes do STF e do STJ (súmulas vinculantes, repercussão geral, repetitivos) e aponta quando a jurisprudência muda o que a lei diz. Parâmetro opcional: tema, para busca ao vivo no LexML.",
     "comunicador": "Escreve o e-mail ao fornecedor quando a nota precisa de correção ou confirmação. Último passo.",
 }
-FERRAMENTAS = [{"type": "function", "function": {"name": k, "description": d, "parameters": {"type": "object", "properties":
-               ({"cnpj": {"type": "string"}} if k == "cnpj" else {"tema": {"type": "string"}} if k in ("juridico", "jurisprudencia") else {})}}} for k, d in DESCR.items()]
-SISTEMA = ("Você é o coordenador de uma equipe de auditoria fiscal brasileira. Planeje e chame os agentes (ferramentas) na ordem certa: "
-           "extrator primeiro; depois o auditor certo para o tipo de nota (ISS, ICMS, VAT dos Emirados ou GST da Índia); para notas brasileiras, consulte o CNPJ do emitente; consulte a jurisprudência vinculante; se houver erros ou alertas, peça ao jurídico "
-           "o fundamento e ao comunicador o e-mail. Se uma ferramenta falhar, siga sem ela. Ao terminar, escreva em português um parecer de até 6 linhas "
-           "com a decisão final (aprovar, revisar ou devolver ao fornecedor), citando as fontes entre colchetes. Use apenas os resultados das ferramentas.")
+SISTEMA = ("Você é o auditor fiscal sênior que revisa o trabalho de uma equipe de agentes. Recebe os resultados já apurados "
+           "(achados, fundamentos legais, jurisprudência, CNPJ). Escreva em português um parecer de até 6 linhas com a decisão final "
+           "(aprovar, revisar ou devolver ao fornecedor). Toda afirmação deve citar entre colchetes uma fonte que aparece nos resultados. "
+           "Use apenas os resultados recebidos; não invente lei, valor ou fato.")
 
 
-def _llm(msgs):
+def _llm(msgs, espera=60):
     base, model = os.getenv("LLM_BASE_URL"), os.getenv("LLM_MODEL")
-    corpo = json.dumps({"model": model, "messages": msgs, "tools": FERRAMENTAS, "temperature": 0.1, "max_tokens": 600}).encode()
+    corpo = json.dumps({"model": model, "messages": msgs, "temperature": 0.1, "max_tokens": 500}).encode()
     req = urllib.request.Request(base.rstrip("/") + "/chat/completions", data=corpo, method="POST",
                                  headers={"Authorization": f"Bearer {os.getenv('LLM_API_KEY', 'x')}", "Content-Type": "application/json"})
-    with urllib.request.urlopen(req, timeout=60) as r:
+    with urllib.request.urlopen(req, timeout=max(2, espera)) as r:
         return json.loads(r.read())["choices"][0]["message"]
 
 
-def coordenar(nome: str, dados: bytes) -> dict:
+def _citacoes_ok(texto: str, resultados: str) -> bool:
+    """Trava de citação: o parecer precisa citar fontes, e cada fonte citada precisa existir nos resultados dos agentes."""
+    import re
+    cits = [c.strip() for c in re.findall(r"\[([^\]]+)\]", texto or "")]
+    if not cits:
+        return False
+    base = resultados.lower()
+    def ok(c):
+        toks = re.findall(r"[\w./§º-]{3,}", c.lower())
+        nums = [t for t in toks if any(ch.isdigit() for ch in t)]
+        if any(t not in base for t in nums):  # número de lei, artigo ou item inventado
+            return False
+        return bool(toks) and sum(t in base for t in toks) >= 0.6 * len(toks)
+    return all(ok(c) for c in cits)
+
+
+def coordenar(nome: str, dados: bytes, prazo: float | None = None) -> dict:
+    """Os agentes especialistas rodam em sequência fixa (regras, sem IA no caminho). Depois, UMA chamada ao modelo
+    na AMD escreve o parecer citado; a trava de citação o confere. Se o modelo falhar ou não citar, as regras escrevem."""
+    import time
     s = Sessao(nome, dados)
-    modo, parecer = "regras", None
-    if os.getenv("LLM_BASE_URL") and os.getenv("LLM_MODEL"):
+    modo, parecer, aviso, chamadas = "regras", None, None, []
+    s.log("Coordenador", "Plano: extrair → auditar → CNPJ → jurisprudência → jurídico → comunicar")
+    r = ag_extrator(s)
+    AGENTES[r["proximo"]](s)
+    if r["proximo"] in ("auditor_iss", "auditor_icms"):
+        ag_cnpj(s)
+        ag_jurisprudencia(s)
+    if s.auditoria["decisao"] != "aprovar":
+        ag_juridico(s)
+    ag_comunicador(s)
+    if os.getenv("LLM_BASE_URL") and os.getenv("LLM_MODEL") and (prazo is None or time.time() < prazo - 3):
+        a = s.auditoria
+        resultados = json.dumps({"decisao": a["decisao"], "achados": [x for x in a["achados"] if x["nivel"] in ("erro", "alerta")] or a["achados"][:6],
+                                 "fundamentos": s.fundamentos, "jurisprudencia": s.juris, "cnpj": s.cnpj}, ensure_ascii=False, default=str)[:6000]
         try:
-            msgs = [{"role": "system", "content": SISTEMA}, {"role": "user", "content": f"Audite o arquivo '{nome}'."}]
-            for _ in range(10):  # no máximo 10 rodadas de planejamento
-                m = _llm(msgs)
-                msgs.append({k: v for k, v in m.items() if k in ("role", "content", "tool_calls") and v is not None})
-                if not m.get("tool_calls"):
-                    parecer = (m.get("content") or "").strip()
-                    break
-                for tc in m["tool_calls"]:
-                    nomef, args = tc["function"]["name"], json.loads(tc["function"].get("arguments") or "{}")
-                    s.log("Coordenador (IA)", f"Decidiu chamar: {nomef}", json.dumps(args, ensure_ascii=False) if args else "")
-                    try:
-                        res = AGENTES[nomef](s, **args) if nomef in AGENTES else {"erro": "agente inexistente"}
-                    except Exception as e:  # noqa: BLE001
-                        res = {"erro": f"{type(e).__name__}: {e}"[:200]}
-                        s.log(nomef, "Falhou; o coordenador vai replanejar", res["erro"])
-                    msgs.append({"role": "tool", "tool_call_id": tc["id"], "content": json.dumps(res, ensure_ascii=False, default=str)[:6000]})
-            modo = "ia"
+            t0 = time.time()
+            m = _llm([{"role": "system", "content": SISTEMA}, {"role": "user", "content": f"Arquivo '{nome}'. Resultados dos agentes:\n{resultados}"}],
+                     (prazo - time.time() - 1) if prazo else 60)
+            chamadas.append(round(time.time() - t0, 2))
+            texto = (m.get("content") or "").strip()
+            if _citacoes_ok(texto, resultados):
+                parecer, modo = texto, "ia"
+                s.log("Coordenador (IA)", f"Parecer escrito por {os.getenv('LLM_MODEL')} em 1 chamada", f"{chamadas[0]} s · citações conferidas pela trava")
+            else:
+                aviso = "parecer da IA recusado pela trava de citação; parecer pelas regras"
+                s.log("Trava de citação", "Parecer da IA recusado (fonte ausente ou não encontrada nos resultados)", "as regras escrevem o parecer")
         except Exception as e:  # noqa: BLE001
-            s.log("Coordenador", "Modelo indisponível; assumiu o planejador de regras", type(e).__name__)
-    if not s.auditoria:  # planejador de regras (mesmo roteiro)
-        s.log("Coordenador", "Plano: extrair → auditar → CNPJ → jurisprudência → jurídico → comunicar")
-        r = ag_extrator(s)
-        AGENTES[r["proximo"]](s)
-        if r["proximo"] in ("auditor_iss", "auditor_icms"):
-            ag_cnpj(s)
-            ag_jurisprudencia(s)
-            if s.auditoria["decisao"] != "aprovar":
-                ag_juridico(s)
-        ag_comunicador(s)
-    elif s.auditoria["decisao"] != "aprovar" and s.email is None:
-        ag_comunicador(s)
+            aviso = "modelo indisponível; parecer pelas regras"
+            s.log("Coordenador", "Modelo indisponível; as regras escrevem o parecer", type(e).__name__)
     a = s.auditoria
     humano = None
     if a["decisao"] != "aprovar" and evolus.ligado():
@@ -281,5 +298,4 @@ def coordenar(nome: str, dados: bytes) -> dict:
     nota = {k: v for k, v in (s.nota or {}).items() if not k.startswith("_")}
     return {"arquivo": nome, "tipo": a.get("tipo"), "nota": nota, "municipio": a.get("municipio"), "achados": a["achados"], "erros": a["erros"], "alertas": a["alertas"],
             "decisao": a["decisao"], "parecer": parecer, "email": s.email, "cnpj": s.cnpj, "fundamentos": s.fundamentos, "jurisprudencia": s.juris, "passos": s.passos,
-            "modo": modo, "modelo": os.getenv("LLM_MODEL") if modo == "ia" else None,
-            "revisao_humana": humano}
+            "modo": modo, "modelo": os.getenv("LLM_MODEL") if modo == "ia" else None, "ficha": a.get("ficha"), "itens": a.get("itens"), "revisao_humana": humano, "aviso_llm": aviso, "tempos_llm": chamadas}
