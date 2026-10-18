@@ -280,6 +280,10 @@ def coordenar(nome: str, dados: bytes, prazo: float | None = None) -> dict:
         a = s.auditoria
         resultados = json.dumps({"decisao": a["decisao"], "achados": [x for x in a["achados"] if x["nivel"] in ("erro", "alerta")] or a["achados"][:6],
                                  "fundamentos": s.fundamentos, "jurisprudencia": s.juris, "cnpj": s.cnpj}, ensure_ascii=False, default=str)[:6000]
+        # nada identificável sai para o modelo: CNPJ, CPF, e-mails e nomes viram marcadores; o parecer volta com os dados reais só na tela
+        n = s.nota or {}
+        ids = [str(v) for k, v in n.items() if v and isinstance(v, (str, int)) and any(w in k.lower() for w in ("nome", "cnpj", "cpf", "piva", "partita", "trn", "gstin", "vat", "email"))]
+        resultados, recibo, mapa = evolus.mascarar(resultados, ids + [(s.cnpj or {}).get("razao_social")], com_mapa=True)
         try:
             t0 = time.time()
             m = _llm([{"role": "system", "content": SISTEMA}, {"role": "user", "content": f"Arquivo '{nome}'. Resultados dos agentes:\n{resultados}"}],
@@ -287,8 +291,10 @@ def coordenar(nome: str, dados: bytes, prazo: float | None = None) -> dict:
             chamadas.append(round(time.time() - t0, 2))
             texto = (m.get("content") or "").strip()
             if _citacoes_ok(texto, resultados):
+                for k, v in mapa.items():
+                    texto = texto.replace(k, v)
                 parecer, modo = texto, "ia"
-                s.log("Coordenador (IA)", f"Parecer escrito por {os.getenv('LLM_MODEL')} em 1 chamada", f"{chamadas[0]} s · citações conferidas pela trava")
+                s.log("Coordenador (IA)", f"Parecer escrito por {os.getenv('LLM_MODEL')} em 1 chamada", f"{chamadas[0]} s · citações conferidas pela trava · {len(mapa)} dado(s) mascarado(s) antes do envio")
             else:
                 aviso = "parecer da IA recusado pela trava de citação; parecer pelas regras"
                 s.log("Trava de citação", "Parecer da IA recusado (fonte ausente ou não encontrada nos resultados)", "as regras escrevem o parecer")
